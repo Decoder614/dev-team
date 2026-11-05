@@ -48,3 +48,4 @@ review_severities:
 project_discovery:
   instructions_file: "AGENTS.md"
   profile_file: ".dev-team/project-profile.yaml"
+

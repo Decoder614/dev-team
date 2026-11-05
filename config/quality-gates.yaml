@@ -43,3 +43,4 @@ final_acceptance:
   require_developer_signoff: true
   require_clean_git_status: true
   require_completed_qa_report: true
+

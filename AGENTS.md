@@ -143,3 +143,4 @@ Codex and all active agents must strictly adhere to the safety boundaries define
 2. **Artifact Status Values:** Use standard lifecycle statuses: `DRAFT`, `IN_REVIEW`, `APPROVED`, `NEEDS_REVISION`, `SUPERSEDED`.
 3. **Artifact Location:** In target application projects, feature documentation is stored in `.dev-team/features/<feature-name>/` (or the directory configured in `project-profile.yaml`).
 4. **Document Integrity:** Never silently overwrite an approved document with a draft. Revisions must be tracked clearly with version and status updates.
+
