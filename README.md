@@ -2,7 +2,7 @@
 
 > **Your AI Software Development Team.**
 
-Dev-Team is a reusable, AI-powered software engineering system designed to help an individual developer coordinate a virtual team of specialized AI agents across multiple independent software projects using OpenAI Codex CLI.
+Dev-Team is a reusable, specification-driven AI software engineering framework designed to help an individual developer coordinate a virtual team of specialized AI agents across multiple independent software projects using OpenAI Codex CLI.
 
 It provides repeatable workflows, role-specific agent instructions, reusable skills, templates, quality gates, and project discovery mechanisms. Dev-Team guides work through the entire software engineering lifecycle—from rough product idea to validated, production-ready code.
 
@@ -35,22 +35,112 @@ Dev-Team provides a structured, specification-driven engineering system that:
 
 ---
 
-## 2. High-Level Architecture
+## 2. Quickstart & Installation
 
-Dev-Team operates as a modular, skill-driven system coordinated within OpenAI Codex CLI:
+Dev-Team skills can be installed globally into your user-level Codex skills directory or linked into specific target projects.
 
-- **Interface Layer:** Accepts developer requests through Codex CLI.
-- **Orchestration Layer:** Coordinates workflows, manages stage transitions, and enforces developer approval gates (`AGENTS.md`).
-- **Agent Layer (`agents/`):** Specialized engineering roles (Product Analyst, Product Reviewer, System Architect, Technical Planner, Developer, QA Engineer).
-- **Skill Layer (`skills/`):** Reusable procedural knowledge and domain expertise discovered on demand.
-- **Workflow Layer (`workflows/`):** Step-by-step procedures guiding complete engineering processes.
-- **Template Layer (`templates/`):** Standardized markdown templates for requirements, designs, plans, tasks, and reports.
-- **Configuration Layer (`config/`):** Workflow settings, defaults, and quality gates.
-- **Project Context Layer:** Discovered dynamically from the target application repository.
+### 2.1 Windows Installation
+
+```powershell
+# Default installation (copies skills to ~/.codex/skills/)
+.\scripts\install.ps1
+
+# Symlink/junction installation (live updates from source repository)
+.\scripts\install.ps1 -Mode Symlink
+
+# Install directly into a specific target project repository
+.\scripts\install.ps1 -TargetRepo "C:\apps\my-project"
+```
+
+### 2.2 Unix / macOS Installation
+
+```bash
+# Default installation
+./scripts/install.sh
+
+# Symlink mode
+./scripts/install.sh -m symlink
+
+# Install into a target project repository
+./scripts/install.sh -t "/path/to/my-project"
+```
+
+For complete prerequisites, custom paths, and uninstallation instructions, see the [Installation Guide](docs/installation.md).
+
+```powershell
+# Default installation (copies skills to ~/.codex/skills/)
+.\scripts\install.ps1
+
+# Symlink/junction installation (live updates from source repository)
+.\scripts\install.ps1 -Mode Symlink
+
+# Install directly into a specific target project repository
+.\scripts\install.ps1 -TargetRepo "E:\apps\my-project"
+```
+
+### 2.2 Unix / macOS Installation
+
+```bash
+# Default installation
+./scripts/install.sh
+
+# Symlink mode
+./scripts/install.sh -m symlink
+
+# Install into a target project repository
+./scripts/install.sh -t "/path/to/my-project"
+```
+
+For complete prerequisites, custom paths, and uninstallation instructions, see the [Installation Guide](docs/installation.md).
 
 ---
 
-## 3. Repository Organization
+## 3. Engineering Workflows
+
+Dev-Team coordinates engineering through eight standard operating procedures:
+
+| Workflow | Entry Point | Primary Role | Activated Skill | Purpose |
+|---|---|---|---|---|
+| **New Feature** | `workflows/new-feature.md` | Product Analyst | `product-requirements` | Draft requirements and acceptance criteria |
+| **Validate Requirement** | `workflows/validate-requirement.md` | Product Reviewer | `requirement-validation` | Independent requirements audit and gap check |
+| **Design Feature** | `workflows/design-feature.md` | System Architect | `system-design` | Technical architecture and data modeling |
+| **Create Plan** | `workflows/create-plan.md` | Technical Planner | `technical-planning` | Task slicing, dependencies, and validation steps |
+| **Implement Next** | `workflows/implement-next.md` | Developer | `flutter-development` | Controlled single-task implementation & tests |
+| **Validate Feature** | `workflows/validate-feature.md` | QA Engineer | `feature-validation` | End-to-end verification and QA report |
+| **Fix Bug** | `workflows/fix-bug.md` | Developer / QA | `bug-fixing` | Defect reproduction, minimal fix & regression tests |
+| **Feature Status** | `workflows/feature-status.md` | Auditor | *Direct Inspection* | Zero-hallucination progress accounting |
+
+For comprehensive phase diagrams, prerequisites, and developer commands, see the [Workflows Guide](docs/workflows.md).
+
+---
+
+## 4. System Architecture & Boundaries
+
+Dev-Team operates across eight modular architectural layers:
+
+```text
+Interface Layer (Codex CLI)
+  └── Orchestration Layer (Root AGENTS.md & Approval Gates)
+        ├── Configuration Layer (workflow.yaml, quality-gates.yaml, defaults.yaml)
+        ├── Agent Layer (6 declarative role specifications in agents/*.toml)
+        ├── Skill Layer (9 reusable procedural skills in skills/*/SKILL.md)
+        ├── Workflow Layer (8 end-to-end procedures in workflows/*.md)
+        ├── Template Layer (6 standardized artifact formats in templates/*.md)
+        └── Project Context Layer (target AGENTS.md, .dev-team/project-profile.yaml)
+```
+
+### Mandatory Safety Gates
+- **SAFE-001:** Developer must approve requirements before implementation begins.
+- **SAFE-002:** Developer must approve significant architecture and data-model changes.
+- **SAFE-003:** Developer must approve technical implementation plan before code modifications.
+- **SAFE-009:** Never claim tests passed without executing commands and observing output.
+- **SAFE-010:** Inspect git status prior to edits; never overwrite uncommitted developer work.
+
+For complete architectural details, see the [Architecture Guide](docs/architecture.md).
+
+---
+
+## 5. Repository Organization
 
 ```text
 dev-team/
@@ -117,40 +207,28 @@ dev-team/
         └── plan.md
 ```
 
-### Directory Responsibilities
+---
 
-| Directory | Responsibility |
-|---|---|
-| `config/` | Contains system-wide configuration defining workflow behaviors, default settings, and quality requirements. |
-| `agents/` | Contains specialized agent definitions describing roles, responsibilities, boundaries, and expected outputs. |
-| `skills/` | Contains reusable procedures and engineering knowledge, independently discoverable and loaded only when relevant. |
-| `workflows/` | Defines the sequence of activities required to complete an engineering process, coordinating agents and skills. |
-| `templates/` | Contains standardized document structures for engineering artifacts (requirements, designs, plans, reports). |
-| `scripts/` | Contains deterministic utilities for installation, workspace validation, and other repeatable operations. |
-| `docs/` | Contains system architecture, installation guides, workflows documentation, and project specifications. |
+## 6. Workspace Validation
+
+Verify the integrity of the framework or a configured target application repository using the deterministic validator:
+
+```bash
+# Validate Dev-Team workspace
+python scripts/validate-workspace.py --verbose
+
+# Validate a target project repository
+python scripts/validate-workspace.py --target "/path/to/target-project"
+```
 
 ---
 
-## 4. Implementation Milestones
+## Contributing
 
-Dev-Team is implemented following a sequential, milestone-based plan:
-
-| Milestone | Title | Focus |
-|---|---|---|
-| **M0** | **Repository Foundation** | Git setup, core directory structure, README, LICENSE, `.gitignore` |
-| **M1** | **Core Instructions & Configuration** | Root `AGENTS.md`, `workflow.yaml`, `quality-gates.yaml`, `defaults.yaml` |
-| **M2** | **Product Engineering Workflow** | Product Analyst, Product Reviewer, Requirements skill & template, workflows |
-| **M3** | **Project Discovery & Architecture** | Project discovery skill, System Architect agent, System Design skill & template |
-| **M4** | **Technical Planning Workflow** | Technical Planner agent, Planning skill, Plan & Task templates, planning workflow |
-| **M5** | **Controlled Development Workflow** | Developer agent, Flutter development skill, `implement-next` workflow |
-| **M6** | **QA & Feature Validation** | QA Engineer agent, Feature Validation skill, Code Review skill, QA template |
-| **M7** | **Bug Management & Status** | Bug Fixing skill, Bug Report template, `fix-bug` and `feature-status` workflows |
-| **M8** | **Installation & Documentation** | Cross-platform install scripts, workspace validation, user documentation |
-| **M9** | **Pilot & System Validation** | End-to-end pilot on real projects, portability validation, MVP acceptance |
+Contributions are welcome! Read the [Contribution Guide](docs/contribution-guide.md) for instructions on creating new agents, authoring reusable skills, and submitting pull requests.
 
 ---
 
-## 5. License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
-
