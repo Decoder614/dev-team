@@ -67,32 +67,6 @@ Dev-Team skills can be installed globally into your user-level Codex skills dire
 
 For complete prerequisites, custom paths, and uninstallation instructions, see the [Installation Guide](docs/installation.md).
 
-```powershell
-# Default installation (copies skills to ~/.codex/skills/)
-.\scripts\install.ps1
-
-# Symlink/junction installation (live updates from source repository)
-.\scripts\install.ps1 -Mode Symlink
-
-# Install directly into a specific target project repository
-.\scripts\install.ps1 -TargetRepo "E:\apps\my-project"
-```
-
-### 2.2 Unix / macOS Installation
-
-```bash
-# Default installation
-./scripts/install.sh
-
-# Symlink mode
-./scripts/install.sh -m symlink
-
-# Install into a target project repository
-./scripts/install.sh -t "/path/to/my-project"
-```
-
-For complete prerequisites, custom paths, and uninstallation instructions, see the [Installation Guide](docs/installation.md).
-
 ---
 
 ## 3. Engineering Workflows
