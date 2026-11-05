@@ -1,0 +1,80 @@
+# ==============================================================================
+# Dev-Team .gitignore
+# ==============================================================================
+
+# Operating System files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.directory
+*~
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.cert
+*.pfx
+*.p12
+*.kdbx
+secrets/
+credentials.json
+token.json
+auth.json
+
+# IDEs and Code Editors
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Logs and runtime diagnostics
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files and caches
+*.tmp
+*.temp
+tmp/
+temp/
+scratch/
+.cache/
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+env/
+ENV/
+
+# Node.js dependencies
+node_modules/
+
+# Flutter / Dart temporary build artifacts (for workspace validation / tests)
+.dart_tool/
+.packages
+build/
