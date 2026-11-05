@@ -128,7 +128,7 @@ Never claim a check passed or assume a platform behavior works if it was not act
    - **BLOCKING RULE 2:** If any mandatory acceptance criterion is `UNMET` -> Outcome MUST be `NEEDS_REVISION` (`REQ-046`).
    - **CONDITIONAL RULE:** If all mandatory criteria are `VERIFIED`, zero `BLOCKER`/`CRITICAL` findings exist, but non-blocking `MAJOR` or `MINOR` items remain -> Outcome is `APPROVED_WITH_FOLLOW_UPS` (requires developer review).
    - **APPROVAL RULE:** If all criteria are `VERIFIED`, zero defects or only trivial suggestions exist -> Outcome is `APPROVED`.
-3. Generate the completed QA report conforming to `templates/qa-report.md`.
+3. Generate the completed QA report conforming to `templates/qa-report.md` (or bundled `resources/qa-report.md`).
 
 ---
 

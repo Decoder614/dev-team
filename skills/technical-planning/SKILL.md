@@ -120,7 +120,7 @@ Each task must include (REQ-024):
 ### Step 7: Decide on Task Granularity & Discrete Task Files
 Evaluate the feature scope:
 - **Standard Features (< 8-10 tasks):** Keep all task definitions directly within `plan.md`. This minimizes file clutter and keeps the plan cohesive.
-- **Complex Features (10+ tasks, multi-developer, or deep components):** Maintain high-level task summaries in `plan.md` and generate discrete `tasks/<task-id>.md` files conforming to `templates/task.md` in `.dev-team/features/<feature-name>/tasks/`. This allows workers to consume individual task cards without loading the entire plan.
+- **Complex Features (10+ tasks, multi-developer, or deep components):** Maintain high-level task summaries in `plan.md` and generate discrete `tasks/<task-id>.md` files conforming to `templates/task.md` (or bundled `resources/task.md`) in `.dev-team/features/<feature-name>/tasks/`. This allows workers to consume individual task cards without loading the entire plan.
 
 ### Step 8: Plan Review & Quality Audit (REQ-028)
 Perform a rigorous plan audit across six dimensions before presenting to the developer:
@@ -134,7 +134,7 @@ Perform a rigorous plan audit across six dimensions before presenting to the dev
 *Document the audit findings in the Plan Review section of `plan.md`.*
 
 ### Step 9: Assemble `plan.md`
-1. Load `templates/plan.md`.
+1. Load `templates/plan.md` (or bundled `resources/plan.md`).
 2. Populate all sections with the synthesized plan data.
 3. Set status to `DRAFT`.
 4. Save the file to `.dev-team/features/<feature-name>/plan.md`.

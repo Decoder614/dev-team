@@ -77,7 +77,7 @@ flowchart TD
 ```
 
 ### Phase 1: Defect Capture & Intake (`REQ-048`)
-1. Ingest available defect details into a structured document conforming to `templates/bug-report.md`.
+1. Ingest available defect details into a structured document conforming to `templates/bug-report.md` (or bundled `resources/bug-report.md`).
 2. Capture core attributes:
    - **Bug Identifier:** Unique key (e.g. `BUG-001`).
    - **Title:** Actionable, concise summary of the failure.

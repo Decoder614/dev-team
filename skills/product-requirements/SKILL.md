@@ -48,7 +48,9 @@ Follow these sequential steps to draft a structured requirement document:
    - If configured differently in `project-profile.yaml` or project `AGENTS.md`, use the project-specified path.
 3. Check whether an existing `requirement.md` exists in that directory:
    - If an approved `requirement.md` exists, **do not overwrite it**. Create a revision draft or inspect diffs.
-   - If none exists, create the target directory and initialize from `templates/requirement.md`.
+   - If none exists, create the target directory and initialize from the template:
+     1. Local project template: `templates/requirement.md` or `.dev-team/templates/requirement.md` (if customized by the project).
+     2. Bundled skill template: `resources/requirement.md` (shipped directly with this skill).
 
 ### Step 2: Understand Problem & Users
 1. **Identify the Core Problem:** What pain point or capability gap does this solve?
@@ -93,7 +95,7 @@ Examine the complete user journey:
 3. Label risks and potential implementation complexities.
 
 ### Step 8: Produce `requirement.md`
-1. Populate `templates/requirement.md` with the collected details.
+1. Populate `templates/requirement.md` (or bundled `resources/requirement.md`) with the collected details.
 2. Ensure document metadata is accurate:
    - `Status: DRAFT`
    - `Version: 1.0` (or incremented version if revising)
@@ -111,7 +113,7 @@ Once the draft is written:
 ## 5. Output Expectations
 
 The resulting `requirement.md` must:
-- Adhere strictly to the structure in `templates/requirement.md`.
+- Adhere strictly to the structure in `templates/requirement.md` (or bundled `resources/requirement.md`).
 - Contain stable requirement IDs (`REQ-001`, `REQ-002`, ...).
 - Provide verifiable acceptance criteria for each requirement.
 - Set initial status to `DRAFT`.

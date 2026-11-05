@@ -155,7 +155,7 @@ For each non-trivial technical choice:
 2. Mark these items prominently in the Consequential Decisions checklist of `system-design.md` (SAFE-002).
 
 ### Step 12: Produce `system-design.md`
-1. Populate `templates/system-design.md` with the completed architecture.
+1. Populate `templates/system-design.md` (or bundled `resources/system-design.md`) with the completed architecture.
 2. Set document metadata:
    - `Status: DRAFT`
    - `Version: 1.0`
