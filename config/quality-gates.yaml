@@ -1,0 +1,45 @@
+# Dev-Team Quality-Gate Configuration
+# Defines mandatory verification requirements and quality criteria for each engineering phase.
+
+version: 1
+
+requirements:
+  require_acceptance_criteria: true
+  require_review: true
+  block_on_unresolved_critical_questions: true
+  require_developer_approval: true
+
+architecture:
+  require_project_discovery: true
+  require_architectural_justification: true
+  require_developer_approval_for_significant_decisions: true
+  prohibit_hardcoded_framework_assumptions: true
+
+planning:
+  require_traceability_to_requirements: true
+  require_independent_verifiable_tasks: true
+  require_developer_plan_approval: true
+  require_explicit_task_dependencies: true
+
+implementation:
+  require_task_acceptance_criteria: true
+  require_validation_before_completion: true
+  prohibit_unapproved_scope_changes: true
+  enforce_one_task_limit: true
+  preserve_unrelated_modifications: true
+
+testing:
+  require_test_result_reporting: true
+  prohibit_unverified_pass_claims: true
+  require_observed_command_output: true
+
+code_review:
+  require_independent_review: true
+  check_correctness_and_conventions: true
+  check_security_and_data_integrity: true
+  check_regression_risk: true
+
+final_acceptance:
+  require_developer_signoff: true
+  require_clean_git_status: true
+  require_completed_qa_report: true

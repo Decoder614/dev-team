@@ -1,0 +1,50 @@
+# Dev-Team Default System Configuration
+# Reusable system defaults for artifact paths, statuses, discovery targets, and file naming.
+# Project-specific configurations or instructions take precedence over these defaults.
+
+version: 1
+
+paths:
+  features_directory: ".dev-team/features"
+  templates_directory: "templates"
+  agents_directory: "agents"
+  skills_directory: "skills"
+  workflows_directory: "workflows"
+
+artifacts:
+  requirement_filename: "requirement.md"
+  system_design_filename: "system-design.md"
+  plan_filename: "plan.md"
+  task_filename: "task.md"
+  qa_report_filename: "qa-report.md"
+  bug_report_filename: "bug-report.md"
+
+artifact_statuses:
+  initial: "DRAFT"
+  allowed:
+    - "DRAFT"
+    - "IN_REVIEW"
+    - "APPROVED"
+    - "NEEDS_REVISION"
+    - "SUPERSEDED"
+
+task_statuses:
+  initial: "PENDING"
+  allowed:
+    - "PENDING"
+    - "IN_PROGRESS"
+    - "BLOCKED"
+    - "COMPLETED"
+    - "NEEDS_REVIEW"
+
+review_severities:
+  allowed:
+    - "BLOCKER"
+    - "CRITICAL"
+    - "MAJOR"
+    - "MINOR"
+    - "TRIVIAL"
+
+project_discovery:
+  instructions_file: "AGENTS.md"
+  profile_file: ".dev-team/project-profile.yaml"
