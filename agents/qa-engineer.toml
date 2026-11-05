@@ -55,7 +55,8 @@ primary = [
 ]
 secondary = [
   "skills/project-discovery/SKILL.md",
-  "skills/flutter-development/SKILL.md"
+  "skills/flutter-development/SKILL.md",
+  "skills/bug-fixing/SKILL.md"
 ]
 
 [boundaries]
