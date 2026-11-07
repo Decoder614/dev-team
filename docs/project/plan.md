@@ -3,12 +3,12 @@
 **Document type:** Technical Implementation Plan  
 **Project:** Dev-Team  
 **Repository:** `dev-team`  
-**Version:** 1.0  
+**Version:** 1.1  
 **Status:** approved  
-**Last updated:** 2026-11-05  
+**Last updated:** 2026-11-06  
 **Based on:**
-- `requirements.md` — Approved
-- `system-design.md` — Approved
+- `requirements.md` — Approved (v1.1)
+- `system-design.md` — Approved (v1.1)
 
 ---
 
@@ -20,16 +20,17 @@ Implement Dev-Team as a reusable, local AI-powered software engineering framewor
 
 The implementation must establish a system capable of managing the complete software development lifecycle:
 
-1. Product requirements.
-2. Requirement validation.
-3. Project discovery.
-4. System design.
-5. Technical planning.
-6. Controlled implementation.
-7. Code review.
-8. Feature validation.
-9. Bug diagnosis and fixing.
-10. Feature status reporting.
+1. Project onboarding and repository initialization.
+2. Product requirements.
+3. Requirement validation.
+4. Project discovery.
+5. System design.
+6. Technical planning.
+7. Controlled implementation.
+8. Code review.
+9. Feature validation.
+10. Bug diagnosis and fixing.
+11. Feature status reporting.
 
 Dev-Team itself will be developed using the same engineering principles it is designed to provide to other projects.
 
@@ -88,6 +89,7 @@ No task should be marked complete without satisfying its acceptance criteria.
 |---|---|---|---|
 | M0 | Repository Foundation | Must Have | Establish the Dev-Team repository |
 | M1 | Core Instructions & Configuration | Must Have | Establish system operating rules |
+| M1.5 | Project Initialization & Repository Onboarding | Must Have | Foundational repository onboarding skill, templates & context |
 | M2 | Product Engineering Workflow | Must Have | Requirements creation and validation |
 | M3 | Project Discovery & Architecture | Must Have | Project-aware feature design |
 | M4 | Technical Planning Workflow | Must Have | Structured implementation planning |
@@ -274,6 +276,202 @@ Define only the genuinely reusable defaults required by the system.
 **Milestone completion criteria:**
 
 Codex has a clear operating instruction set and a consistent configuration foundation.
+
+---
+
+# 4.5 Milestone 1.5 — Project Initialization & Repository Onboarding
+
+**Objective:** Implement the foundational onboarding capability to introduce Dev-Team to any existing or new repository, analyze project state, gather missing context without speculative invention, and establish standardized root instructions, project documentation, and persistent context.
+
+**Dependencies:** M0, M1.
+
+## Task M1.5-T01 — Create target project templates suite
+
+**Scope:**
+
+Create standardized, modular templates under `templates/project/` for bootstrapping target repositories:
+
+1. **Root Instructions:**
+   - `templates/project/AGENTS.md`: Base AI agent instruction entry point.
+   - `templates/project/rules.md`: Project-specific coding standards and development constraints.
+   - `templates/project/DESIGN.md`: UI/UX design tokens and visual guidelines (marked optional for backend projects).
+2. **Project Documentation:**
+   - `templates/project/overview.md`: Vision, problem domain, and target users.
+   - `templates/project/requirements.md`: System-level requirements baseline.
+   - `templates/project/system-design.md`: Architecture overview and subsystem design.
+   - `templates/project/plan.md`: Roadmap, milestones, and release phases.
+   - `templates/project/tech-stack.md`: Languages, frameworks, dependencies, and infrastructure.
+   - `templates/project/architecture.md`: Source code layout, modules, and conventions.
+
+**Expected files:**
+
+```text
+templates/project/
+├── AGENTS.md
+├── rules.md
+├── DESIGN.md
+├── overview.md
+├── requirements.md
+├── system-design.md
+├── plan.md
+├── tech-stack.md
+└── architecture.md
+```
+
+**Acceptance criteria:**
+- Templates provide clear section structures, placeholder instructions, and non-prescriptive guidance.
+- Root instructions cleanly separate agent operational rules (`AGENTS.md`) from coding conventions (`rules.md`) to avoid duplication.
+- Documentation templates follow standard status conventions (`DRAFT`, `IN_REVIEW`, `APPROVED`).
+
+**Validation:**
+- Inspect template syntax and completeness.
+- Verify placeholder clarity.
+
+## Task M1.5-T02 — Define target configuration and central context schemas
+
+**Scope:**
+
+Define schemas and specifications for the target repository's `.dev-team/` directory:
+
+1. `config.yaml` schema: Declares project type, detected stack (frontend, backend, language, state management, routing, DI), active workflows, and documentation paths.
+2. `project-context.md` specification: Establishes the canonical central context store consumed across all Dev-Team skills, partitioning facts into confirmed truths versus active assumptions.
+3. `initialization-report.md` template: Audit report summarizing detected manifests, generated files, skipped documents, and unresolved items.
+
+**Expected deliverables:**
+- Documented specification in `docs/architecture.md` (or relevant doc) and reference templates.
+
+**Acceptance criteria:**
+- Schema covers diverse project types (Flutter, Node.js, Python, Java, Monorepo, Library, CLI).
+- Central context format enables downstream skills to read concise project reality without re-scanning code.
+- Report template captures complete initialization audit history.
+
+**Validation:**
+- Validate YAML schema consistency.
+- Verify central context sections.
+
+## Task M1.5-T03 — Implement Project Initializer procedural skill
+
+**Scope:**
+
+Create `skills/project-initializer/SKILL.md`.
+
+Define the end-to-end 6-phase onboarding procedure:
+1. Repository discovery (file listings, git status, manifests, dependencies).
+2. Project classification (Existing Project vs Empty Project vs Partially Initialized).
+3. Context gathering (code/manifest extraction for existing projects; structured adaptive interview for empty projects).
+4. Context validation (present understanding, highlight assumptions, confirm decisions).
+5. Documentation generation (instantiate templates from `templates/project/`, preserve existing files).
+6. Initialization verification (cross-document consistency check, generate audit report).
+
+Define strict safety and operating boundaries:
+- **Idempotency:** Re-running does not corrupt or duplicate existing work.
+- **Truth Preservation:** *Never invent speculative architecture for empty repositories.*
+- **Non-implementation boundary:** Scope ends upon context & doc establishment; does not generate feature code.
+- **User Approval:** Explicit developer signoff required before creating or modifying files.
+
+**Expected file:**
+`skills/project-initializer/SKILL.md`
+
+**Acceptance criteria:**
+- Skill follows Codex CLI skill format with clear activation description.
+- Distinct procedural paths for Scenario A (Existing) and Scenario B (Empty).
+- Explicit error handling and confirmation gates.
+
+**Validation:**
+- Review skill against Codex guidelines.
+- Verify phase completeness and safety constraints.
+
+## Task M1.5-T04 — Create Project Initializer reference guides
+
+**Scope:**
+
+Create detailed supporting reference guides in `skills/project-initializer/references/`:
+1. `project-detection.md`: Heuristics and manifest parsing rules for Flutter (`pubspec.yaml`), Node.js/TypeScript (`package.json`), Python (`pyproject.toml`, `requirements.txt`), Rust (`Cargo.toml`), Go (`go.mod`), Java/Kotlin (`build.gradle`).
+2. `context-gathering.md`: Adaptive interview question sequences for empty repositories, techniques for extracting intent from rough ideas, and rules for avoiding speculative architecture.
+3. `documentation-rules.md`: Mapping guidelines determining which files to generate based on project type (e.g. omitting `DESIGN.md` for backend-only).
+4. `initialization-workflow.md`: Phase-by-phase execution checklist and resume instructions for interrupted runs.
+
+**Expected files:**
+```text
+skills/project-initializer/references/
+├── project-detection.md
+├── context-gathering.md
+├── documentation-rules.md
+└── initialization-workflow.md
+```
+
+**Acceptance criteria:**
+- References provide actionable, concrete guidance without cluttering `SKILL.md`.
+- Multi-stack heuristics cover at least 6 common ecosystems.
+- Adaptive questionnaire avoids redundant questions when manifests exist.
+
+**Validation:**
+- Review reference accuracy and modularity.
+
+## Task M1.5-T05 — Implement project structure and manifest verification script
+
+**Scope:**
+
+Create `skills/project-initializer/scripts/check-project-structure.py`:
+- Deterministically inspects target directory trees.
+- Detects existing manifests (`pubspec.yaml`, `package.json`, `pyproject.toml`, etc.).
+- Identifies existing root instruction files (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`).
+- Detects source directory patterns (`lib/`, `src/`, `app/`, `packages/`).
+- Outputs structured JSON reporting project classification (Existing, Empty, or Partial) and detected tech stack.
+
+**Expected file:**
+`skills/project-initializer/scripts/check-project-structure.py`
+
+**Acceptance criteria:**
+- Script runs with zero third-party dependencies using standard Python library.
+- Correctly classifies empty directories vs existing codebases.
+- Returns clean exit codes (0 for success) and structured JSON stdout.
+
+**Validation:**
+- Execute test runs on empty temporary directory and existing project directory.
+- Verify JSON schema output.
+
+## Task M1.5-T06 — Implement Project Initialization workflow SOP
+
+**Scope:**
+
+Create `workflows/initialize-project.md`:
+- Defines step-by-step Standard Operating Procedure (SOP) for repository onboarding.
+- Integrates `project-initializer` skill, `check-project-structure.py` script, and templates suite.
+- Defines approval checkpoints before file creation.
+- Documents handover to downstream workflows (`workflows/new-feature.md`).
+
+**Expected file:**
+`workflows/initialize-project.md`
+
+**Acceptance criteria:**
+- SOP is clear, numbered, and includes explicit entry/exit conditions.
+- Documents developer commands (`/project-initializer`).
+- Aligns with `config/quality-gates.yaml` and `config/workflow.yaml`.
+
+**Validation:**
+- Review workflow logic against system design.
+
+## Task M1.5-T07 — Update workspace validation and integration checks
+
+**Scope:**
+
+Update `scripts/validate-workspace.py`:
+- Validate presence and integrity of `skills/project-initializer/SKILL.md` and reference guides.
+- Validate presence of `skills/project-initializer/scripts/check-project-structure.py`.
+- Validate presence of all templates in `templates/project/`.
+- Validate `workflows/initialize-project.md`.
+
+**Acceptance criteria:**
+- `validate-workspace.py` runs and verifies all new M1.5 components.
+- Zero failures or regressions in existing checks.
+
+**Validation:**
+- Run `python scripts/validate-workspace.py` and observe output.
+
+**Milestone completion criteria:**
+
+Dev-Team can successfully onboard any repository, classify its state, conduct structured onboarding dialogues without hallucinating architecture, establish persistent context in `.dev-team/project-context.md`, and generate standardized root instructions and project documentation.
 
 ---
 
@@ -1287,6 +1485,7 @@ The primary execution dependency is:
 flowchart TD
     M0[M0: Repository Foundation]
     M1[M1: Core Instructions]
+    M1_5[M1.5: Project Initializer & Onboarding]
     M2[M2: Product Engineering]
     M3[M3: Project Discovery and Design]
     M4[M4: Technical Planning]
@@ -1296,7 +1495,7 @@ flowchart TD
     M8[M8: Installation and Documentation]
     M9[M9: Pilot and Validation]
 
-    M0 --> M1 --> M2 --> M3 --> M4
+    M0 --> M1 --> M1_5 --> M2 --> M3 --> M4
     M4 --> M5 --> M6 --> M7 --> M8 --> M9
 ```
 
@@ -1312,6 +1511,7 @@ The following table connects the major implementation milestones to the approved
 |---|---|
 | M0 | REQ-059, REQ-060 |
 | M1 | REQ-066, REQ-068, SAFE-001 to SAFE-012 |
+| M1.5 | REQ-073 to REQ-090, SAFE-001, SAFE-004, SAFE-006, SAFE-010, SAFE-012 |
 | M2 | REQ-001 to REQ-012 |
 | M3 | REQ-013 to REQ-021, REQ-063 to REQ-065 |
 | M4 | REQ-022 to REQ-030 |
@@ -1381,8 +1581,9 @@ The following rules govern implementation of this plan.
 
 Dev-Team will be considered ready for MVP acceptance when:
 
-- All nine milestones have been completed.
+- All ten milestones (M0 through M9, including foundational M1.5) have been completed.
 - All mandatory implementation tasks have passed their acceptance criteria.
+- Foundational `project-initializer` skill and target project templates suite are operational.
 - Reusable skills work across independent Flutter projects.
 - Codex integration is verified.
 - All core workflows are operational.
@@ -1400,10 +1601,10 @@ Dev-Team will be considered ready for MVP acceptance when:
 | Field | Value |
 |---|---|
 | Project | Dev-Team |
-| Requirements | Approved |
-| System Design | Approved |
+| Requirements | Approved (v1.1) |
+| System Design | Approved (v1.1) |
 | Implementation Plan | Pending approval |
-| Plan Version | 1.0 |
+| Plan Version | 1.1 |
 | Approved By | Pending |
 | Approval Date | Pending |
 

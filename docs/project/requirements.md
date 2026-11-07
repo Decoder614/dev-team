@@ -1,9 +1,9 @@
 # Dev-Team — Product Requirements
 
 **Document type:** Product Requirements Document (PRD)  
-**Status:** Draft — pending user review and approval  
-**Version:** 1.0  
-**Last updated:** 2026-11-04  
+**Status:** Draft — pending user review and approval (Updated with Foundational Project Initialization Skill)  
+**Version:** 1.1  
+**Last updated:** 2026-11-06  
 **Repository name:** `dev-team`  
 **Product category:** Reusable AI-assisted software engineering system  
 **Primary interface:** OpenAI Codex CLI
@@ -18,9 +18,11 @@ Dev-Team is a reusable, AI-powered software engineering system designed to help 
 
 It provides repeatable workflows, role-specific agent instructions, reusable skills, templates, project context, and quality gates. It guides work from an initial product idea through requirements, design, implementation planning, coding, testing, review, and maintenance.
 
+Before specialized engineering workflows can begin in any target repository, Dev-Team requires a foundational onboarding process. Through a dedicated Project Initialization capability, Dev-Team introduces itself to any existing or new repository, understands its technology stack, architecture, and conventions, establishes shared context, and prepares the repository for future engineering workflows.
+
 The developer should be able to focus primarily on product thinking, requirement clarification, and approval of important decisions. AI agents should perform supporting engineering work while keeping the developer in control of scope, architecture decisions, and consequential actions.
 
-Dev-Team is maintained in its own repository and must be usable from multiple independent application repositories. It must not be assume every project has the same backend, state-management library, routing solution, or architecture.
+Dev-Team is maintained in its own repository and must be usable from multiple independent application repositories. It must not assume every project has the same backend, state-management library, routing solution, or architecture.
 
 ### 1.2 Product vision
 
@@ -40,6 +42,7 @@ Using AI for isolated coding tasks does not, by itself, provide a consistent end
 
 The developer needs a reusable system that:
 
+- Intelligently onboards and initializes new or existing repositories into a standardized structure without imposing unwanted or speculative architecture.
 - Converts rough ideas into clear, testable requirements.
 - Challenges unclear or conflicting requirements before implementation.
 - Plans work as small, reviewable deliverables.
@@ -65,6 +68,7 @@ Dev-Team must:
 8. Break implementation into small tasks with clear deliverables and acceptance criteria.
 9. Require evidence-based validation before declaring work complete.
 10. Keep the initial system simple, understandable, maintainable, and extensible.
+11. Provide an intelligent onboarding process that discovers existing project context or guides empty project setup, initializing standard instructions and documentation without imposing speculative architecture.
 
 ---
 
@@ -113,6 +117,8 @@ Specialist skills may support these roles, for example Flutter development, back
 
 ### 5.3 Primary use cases
 
+- Initialize and onboard any new or existing repository for Dev-Team using `/project-initializer`.
+- Establish `.dev-team/project-context.md`, root instructions (`AGENTS.md`, `rules.md`, `DESIGN.md`), and standardized project documentation (`docs/project/`).
 - Start a new feature from a rough idea.
 - Turn an idea into a `requirement.md` document.
 - Review and improve an existing requirement document.
@@ -151,6 +157,8 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 | Priority | Capability |
 |---|---|
 | Must have | Reusable repository structure and setup documentation. |
+| Must have | Foundational project initialization & onboarding workflow and skill (`project-initializer`). |
+| Must have | Standardized project template suite (`templates/project/`) and central context (`.dev-team/project-context.md`). |
 | Must have | Project inspection and project-context/profile support. |
 | Must have | Idea-to-requirements workflow. |
 | Must have | Requirement validation workflow. |
@@ -178,7 +186,191 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 
 ## 8. Core workflows and functional requirements
 
-### 8.1 Workflow A — Idea to requirements
+### 8.0 Dev-Team Engineering Lifecycle
+
+Dev-Team coordinates engineering activities through a standardized six-stage lifecycle, with Project Initialization acting as the foundational entry point for every repository:
+
+```text
+Dev-Team lifecycle:
+1. Project Initializer     --> Understand repository, classify project, and establish context
+2. Requirements & Planning --> Define features, structured requirements, and roadmap
+3. System Design           --> Architecture, technical decisions, schemas, and UX design
+4. Development             --> Controlled, one-task-at-a-time implementation via skills/agents
+5. Quality Assurance       --> Independent verification, testing, and requirement coverage
+6. Maintenance & Evolution --> Bug fixing, progress tracking, and documentation synchronization
+```
+
+The Project Initializer is the foundation for everything that follows. Downstream skills consume the standardized project context it establishes, preventing repetitive developer questioning and architectural misalignment.
+
+---
+
+### 8.1 Workflow 0 — Project initialization and repository onboarding (Lifecycle Entry Point)
+
+**Purpose:** Introduce Dev-Team to any existing or new software repository, understand the project, establish its context, and prepare the repository for future development workflows. It is an intelligent onboarding process that first understands the repository and then initializes required project documentation and instructions.
+
+**Proposed Foundational Skill:** `project-initializer` (`skills/project-initializer/SKILL.md`)  
+**Reusable Templates:** `templates/project/`  
+**Target Repository Artifacts:** Root instructions (`AGENTS.md`, `rules.md`, `DESIGN.md`), project documentation (`docs/project/`), and Dev-Team configuration (`.dev-team/`).
+
+#### 8.1.1 Two Initialization Scenarios
+
+The skill intelligently detects and adapts to two distinct repository states:
+
+##### Scenario A: Existing Project
+The repository already contains source code, configurations, dependencies, and possibly documentation.
+
+Dev-Team execution:
+1. **Scan repository structure:** Inspect directory trees, manifests, configs, and existing documentation.
+2. **Identify technology stack:** Detect languages, frameworks, UI toolkits, backends, databases, and major dependencies (Flutter, Node.js, Python, Java, Go, Rust, etc.).
+3. **Understand application purpose:** Extract product intent from existing READMEs, comments, specifications, and code structure.
+4. **Identify architecture & conventions:** Detect architectural slicing (Clean Architecture, Feature-First, Layer-First, Monorepo), state management, routing, dependency injection, and data persistence patterns.
+5. **Analyze existing development rules:** Detect established linting configs, analysis options, formatting guidelines, and git hooks.
+6. **Identify missing or unclear information:** Note architectural ambiguities, undocumented modules, or missing requirements.
+7. **Adaptive developer inquiry:** Ask the user questions only when necessary to resolve material ambiguities.
+8. **Generate project context and documentation:** Produce baseline configuration and documentation reflecting actual code reality.
+
+##### Scenario B: Empty Project
+The repository has little or no implementation (e.g., bare Git init or fresh scaffolding).
+
+Dev-Team execution:
+1. **Detect empty repository:** Recognize that the repository lacks business logic and source architecture.
+2. **Interactive onboarding interview:** Conduct a structured conversation to capture:
+   - Project purpose and vision ("What are you planning to build?").
+   - Target users and audience ("Who are the target users?").
+   - Business objectives and core problem ("What problem does this application solve?").
+   - Functional and non-functional requirements.
+   - Intended technology stack and platforms.
+   - Architectural and design preferences.
+3. **Preserve truth over speculation:** *An empty repository must not automatically receive an invented architecture.* The skill strictly distinguishes confirmed developer decisions from assumptions and unanswered questions.
+4. **Prepare initial documentation:** Draft foundational project specifications based on developer answers.
+5. **Establish development instructions:** Create root operating instructions aligned with agreed goals.
+
+#### 8.1.2 Three Categories of Initialized Files
+
+The skill organizes generated files into three clear tiers of responsibility:
+
+| Category | File | Primary Responsibility |
+|---|---|---|
+| **A. Root-level Instructions** | `AGENTS.md` | Primary AI agent instruction entry point for agents working in this repository. |
+| | `rules.md` | Project-specific coding standards, conventions, and development constraints (avoids duplicating `AGENTS.md`). |
+| | `DESIGN.md` | UI/UX design system and visual guidelines (created only when applicable; omitted for backend/CLI projects). |
+| **B. Project Documentation (`docs/project/`)** | `overview.md` | What the project is, why it exists, vision, and core capabilities. |
+| | `requirements.md` | Functional and non-functional requirements baseline. |
+| | `system-design.md` | System architecture, technical design, and core component layout. |
+| | `plan.md` | Development phases, milestones, and implementation roadmap. |
+| | `tech-stack.md` | Languages, frameworks, libraries, APIs, and infrastructure. |
+| | `architecture.md` | Actual code organization, modules, directories, and architectural conventions. |
+| **C. Dev-Team Configuration (`.dev-team/`)** | `config.yaml` | Project type, detected stack, enabled workflows, and project preferences. |
+| | `project-context.md` | **Central source of truth** for project context consumed and updated by all Dev-Team skills and agents. |
+| | `initialization-report.md` | Audit report of detected stack, generated files, skipped documents, assumptions, and unresolved questions. |
+
+*Note:* Generated files are modular and not all mandatory. For example, `DESIGN.md` is omitted for backend-only projects.
+
+#### 8.1.3 Six-Phase Initialization Flow
+
+```mermaid
+flowchart TD
+    P1["1. Repository Discovery<br/>(Inspect files, manifests, git status, code layout)"] --> P2["2. Project Classification<br/>(Existing vs. Empty vs. Partially Initialized)"]
+    P2 --> P3["3. Context Gathering<br/>(Code extraction OR interactive adaptive interview)"]
+    P3 --> P4["4. Context Validation<br/>(Present understanding, assumptions & confirm decisions)"]
+    P4 --> P5["5. Documentation Generation<br/>(Instantiate templates, preserve existing files)"]
+    P5 --> P6["6. Initialization Verification<br/>(Cross-check consistency, build report)"]
+```
+
+1. **Repository discovery:** Inspect repository files, folder structure, Git status, dependencies, and configuration.
+2. **Project classification:** Determine whether this is an existing project, an empty project, or a partially initialized project.
+3. **Context gathering:**
+   - *Existing project:* Extract information from source code, manifests, and documentation.
+   - *Empty project:* Conduct a structured, adaptive conversation with the user.
+   - *Partially initialized project:* Reuse existing information and ask only about gaps.
+4. **Context validation:** Present the understanding of the project to the user. Identify assumptions, missing information, and decisions requiring explicit confirmation.
+5. **Documentation generation:** Generate the required files using Dev-Team templates from `templates/project/`. Preserve existing documentation and user decisions.
+6. **Initialization verification:** Verify generated files, check consistency across all generated documents, and create an initialization report.
+
+#### 8.1.4 Core Capabilities & Boundaries
+
+- **Idempotency:** Running the skill multiple times must not duplicate, corrupt, or destroy existing work.
+- **Existing file detection:** Never blindly overwrite existing files; prompt the developer before making changes.
+- **Stack detection:** Detect Flutter, Node.js, Python, Java, Go, Rust, etc., and extract concrete versions.
+- **Project type detection:** Identify mobile, web, backend, CLI, library, or monorepo layouts.
+- **Context extraction:** Understand actual implementation code rather than relying only on top-level README files.
+- **Interactive onboarding:** Ask targeted questions when information cannot be reliably extracted.
+- **Documentation validation:** Ensure generated documents do not contradict each other.
+- **Assumption tracking:** Strictly separate confirmed facts from assumptions and open items.
+- **Incremental initialization:** Allow initialization to resume seamlessly if interrupted.
+- **User approval:** Obtain developer signoff before writing or significantly modifying files.
+- **Strict Scope Boundary:** The skill is strictly an onboarding and context-establishment process. It is *not* responsible for implementing application features; its responsibility ends when the repository has sufficient context and documentation for downstream Dev-Team skills to operate effectively.
+
+#### 8.1.5 Suggested Interaction Model
+
+Explicitly invoked by the developer via `/project-initializer`:
+
+```text
+# Example: Existing Project
+> /project-initializer
+
+Dev-Team Project Initialization
+================================
+Repository Analysis Completed
+Project Type: Flutter Application
+Backend: Supabase
+Architecture: Clean Architecture
+Project Status: Existing Implementation
+
+Detected:
+  ✓ Source code layout (lib/features/...)
+  ✓ Dependencies (flutter_bloc, go_router, get_it)
+  ✓ Existing architecture conventions
+  ✓ Authentication module
+  ✓ Database integration
+
+Missing or unclear:
+  - Formal project requirements
+  - System design documentation
+  - Explicit coding standards (rules.md)
+
+Next: Review the extracted project context before generating documentation.
+```
+
+```text
+# Example: Empty Project
+> /project-initializer
+
+Dev-Team Project Initialization
+================================
+Repository Status: Empty Project
+
+Let's understand your project before generating documentation:
+Question 1: What are you planning to build?
+Question 2: Who are the target users?
+Question 3: What core problem does this application solve?
+Question 4: Which technology stack do you intend to use?
+```
+
+Questions must be adaptive: if the repository already contains a manifest (e.g. `pubspec.yaml`), do not ask which framework the user wants.
+
+#### 8.1.6 Functional Requirements: Project Initialization
+
+- `REQ-073` The system shall provide a foundational skill (`project-initializer`) to onboard any target repository into the Dev-Team ecosystem.
+- `REQ-074` The system shall automatically classify target repositories into Existing Project, Empty Project, or Partially Initialized Project.
+- `REQ-075` For existing repositories, the system shall inspect code, manifests, and configurations across multiple stacks (Flutter, Node.js, Python, Java, etc.) to extract actual technologies, architecture patterns, and conventions.
+- `REQ-076` For empty repositories, the system shall conduct an adaptive interactive onboarding dialogue capturing purpose, target users, objectives, requirements, stack, and architectural preferences.
+- `REQ-077` The system shall never invent speculative architecture for empty projects and shall strictly separate confirmed decisions from assumptions and open questions.
+- `REQ-078` The system shall present an onboarding summary to the developer for explicit validation before creating or modifying files.
+- `REQ-079` The system shall generate root instruction files (`AGENTS.md`, `rules.md`, and `DESIGN.md` where applicable) without redundant duplication between agent operating rules and project coding constraints.
+- `REQ-080` The system shall generate standardized project documentation under `docs/project/` (`overview.md`, `requirements.md`, `system-design.md`, `plan.md`, `tech-stack.md`, `architecture.md`).
+- `REQ-081` The system shall create `.dev-team/config.yaml`, `.dev-team/project-context.md`, and `.dev-team/initialization-report.md`.
+- `REQ-082` The system shall treat `.dev-team/project-context.md` as the central source of truth for repository context, consumed and maintained by all Dev-Team skills and workflows.
+- `REQ-083` The initialization process shall be idempotent and support incremental initialization without corrupting or restarting previous onboarding progress.
+- `REQ-084` The system shall detect existing files and require explicit developer signoff prior to overwriting or modifying any existing document.
+- `REQ-085` The system shall validate cross-document consistency to ensure generated files do not contain contradictory statements.
+- `REQ-086` The initialization skill shall not generate application implementation code; its scope ends upon establishing verified project context and documentation.
+- `REQ-087` Downstream Dev-Team skills and workflows shall check for repository initialization and prompt the developer to run `/project-initializer` if `.dev-team/project-context.md` is absent.
+- `REQ-088` The system shall produce an initialization report (`initialization-report.md`) detailing detected stack, created files, skipped documents, assumptions, and unresolved questions.
+
+---
+
+### 8.2 Workflow A — Idea to requirements
 
 **Purpose:** Convert an informal feature idea into a clear, testable requirements document.
 
@@ -202,7 +394,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 - `REQ-006` The system shall not treat a draft requirement as approved until the developer explicitly approves it.
 - `REQ-007` The system shall preserve approved requirements and raise proposed changes rather than silently rewriting their intent.
 
-### 8.2 Workflow B — Requirement validation
+### 8.3 Workflow B — Requirement validation
 
 **Purpose:** Ensure the requirement is sufficiently clear and complete before design or implementation planning.
 
@@ -214,7 +406,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 - `REQ-011` The system shall provide a validation outcome: approved, approved with documented follow-ups, or needs revision.
 - `REQ-012` The system shall not proceed to detailed implementation planning while blocking requirement questions remain unresolved.
 
-### 8.3 Workflow C — Project discovery and feature design
+### 8.4 Workflow C — Project discovery and feature design
 
 **Purpose:** Understand the target repository and design a solution consistent with its existing architecture.
 
@@ -238,7 +430,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 - `security-design.md`
 - Architecture decision records
 
-### 8.4 Workflow D — Implementation planning
+### 8.5 Workflow D — Implementation planning
 
 **Purpose:** Convert approved requirements and design into a safe, ordered, verifiable plan.
 
@@ -256,7 +448,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 
 **Output:** `plan.md`, with task checklists or individual task files if the feature's size justifies them.
 
-### 8.5 Workflow E — Controlled implementation
+### 8.6 Workflow E — Controlled implementation
 
 **Purpose:** Implement approved work incrementally while respecting the target project's conventions.
 
@@ -272,7 +464,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 - `REQ-038` The system shall summarize changed files, implementation decisions, test results, and remaining issues after each task.
 - `REQ-039` The system shall stop at the end of the approved task unless the developer has explicitly authorized continuation.
 
-### 8.6 Workflow F — Code review and feature validation
+### 8.7 Workflow F — Code review and feature validation
 
 **Purpose:** Independently verify that implementation meets the approved requirements and project quality standards.
 
@@ -289,7 +481,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 
 **Output:** A concise QA/review report and updated task status.
 
-### 8.7 Workflow G — Bug diagnosis and fixing
+### 8.8 Workflow G — Bug diagnosis and fixing
 
 **Purpose:** Handle defects through a controlled process separate from ordinary feature implementation.
 
@@ -316,7 +508,7 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 - `REQ-054` The system shall verify the fix using relevant tests and checks.
 - `REQ-055` The system shall not mark a bug as fixed if it remains unreproduced and unverified without clearly documenting that limitation.
 
-### 8.8 Workflow H — Feature status
+### 8.9 Workflow H — Feature status
 
 **Purpose:** Let the developer understand progress and outstanding decisions without rereading every artifact.
 
@@ -339,15 +531,26 @@ The MVP focuses on a reliable local workflow for Flutter projects using Codex CL
 - `REQ-063` The system shall detect or ask the developer to confirm relevant project technologies and conventions before using technology-specific guidance.
 - `REQ-064` The system shall allow project-specific instructions to take precedence over generic recommendations when they do not conflict with explicit safety requirements.
 - `REQ-065` The system shall not assume Gotilo-specific domain knowledge applies to another project.
+- `REQ-089` The system shall treat `.dev-team/project-context.md` as the persistent, canonical context store across all sessions, preventing repetitive developer questioning and preserving cross-session architectural understanding.
+- `REQ-090` Project configuration shall be maintained in `.dev-team/config.yaml`, declaring project type, detected stack, active workflows, and repository preferences.
 
-### 9.2 Project profile
+### 9.2 Project configuration & central context (.dev-team/)
 
-The system should support an optional project profile to record confirmed project conventions. Example:
+Target repositories initialized by Dev-Team shall maintain a dedicated `.dev-team/` directory providing persistent context and declarative configuration:
+
+```text
+.dev-team/
+├── config.yaml               # Project type, detected stack, enabled workflows, and preferences
+├── project-context.md        # Central source of truth for repository context across all skills
+└── initialization-report.md  # Audit of detected stack, generated files, and unresolved items
+```
+
+#### 9.2.1 Configuration Schema (`.dev-team/config.yaml`)
 
 ```yaml
 project:
   name: Example App
-  type: flutter_application
+  type: flutter_application # or web_app, backend_service, cli_tool, monorepo, library
 
 technology:
   frontend: Flutter
@@ -360,26 +563,47 @@ technology:
 engineering:
   architecture: Clean Architecture
   testing: flutter_test
+  linter: flutter_lints
+
+workflows:
+  require_plan_approval: true
+  require_architecture_approval: true
+  auto_update_project_context: true
 
 design:
   brand: Example App
+  design_system_present: true
 ```
 
-The profile is illustrative, not a mandatory technology prescription. Unknown values must remain unknown until discovered or confirmed.
+The configuration is illustrative, not a mandatory prescription. Unknown values remain unassigned until confirmed.
 
-### 9.3 Project discovery
+#### 9.2.2 Central Context Store (`.dev-team/project-context.md`)
 
-At the beginning of work in a repository, Dev-Team should inspect relevant sources such as:
+`.dev-team/project-context.md` serves as the central context backbone for the entire Dev-Team ecosystem. Rather than requiring individual skills or agents to scan the entire repository or repeatedly interview the developer, skills read this file for:
+- Concise project overview and target audience.
+- Confirmed technology stack, state management, and navigation packages.
+- Established directory layout, module conventions, and naming rules.
+- Confirmed architectural decisions versus active assumptions.
 
-- `AGENTS.md` and other repository instructions.
-- `pubspec.yaml` and Flutter/Dart project metadata.
+### 9.3 Project discovery & onboarding relationship
+
+Dev-Team provides two complementary levels of project discovery:
+
+1. **Foundational Repository Onboarding (`project-initializer`):** Executed once upon introducing Dev-Team to a repository (or incrementally re-run). It performs comprehensive repository scanning, project classification, interactive gap-filling, root instruction setup, and generates `.dev-team/project-context.md`.
+2. **Feature-Level Discovery (`project-discovery`):** Executed during downstream workflows (such as `workflows/design-feature.md`). It performs targeted, context-efficient inspections of specific modules, services, routes, or widgets relevant to the active feature without reloading unrelated repository context. When new architectural patterns are established, it updates `.dev-team/project-context.md`.
+
+At the beginning of work in a repository, Dev-Team inspects relevant sources such as:
+
+- `AGENTS.md` and `rules.md` in repository root.
+- `.dev-team/project-context.md` and `.dev-team/config.yaml`.
+- `pubspec.yaml` and Flutter/Dart project metadata (or `package.json`, `pyproject.toml`, etc.).
 - Existing folder and feature structure.
 - Existing tests and test conventions.
 - Routing, state management, dependency injection, and API clients.
-- Existing design tokens and shared UI components.
+- Existing design tokens and shared UI components (`DESIGN.md`).
 - Backend configuration and migration directories, without exposing secrets.
 
-The system should inspect only what is relevant to the task rather than loading the entire repository context indiscriminately.
+The system inspects only what is relevant to the task rather than loading the entire repository context indiscriminately.
 
 ---
 
@@ -414,6 +638,16 @@ dev-team/
 │   ├── developer.toml
 │   └── qa-engineer.toml
 ├── skills/
+│   ├── project-initializer/
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   │   ├── project-detection.md
+│   │   │   ├── context-gathering.md
+│   │   │   ├── documentation-rules.md
+│   │   │   └── initialization-workflow.md
+│   │   └── scripts/
+│   │       └── check-project-structure.py
+│   ├── project-discovery/
 │   ├── product-requirements/
 │   ├── requirement-validation/
 │   ├── system-design/
@@ -428,15 +662,27 @@ dev-team/
 │   ├── plan.md
 │   ├── task.md
 │   ├── bug-report.md
-│   └── qa-report.md
+│   ├── qa-report.md
+│   └── project/
+│       ├── AGENTS.md
+│       ├── rules.md
+│       ├── DESIGN.md
+│       ├── overview.md
+│       ├── requirements.md
+│       ├── system-design.md
+│       ├── plan.md
+│       ├── tech-stack.md
+│       └── architecture.md
 ├── workflows/
+│   ├── initialize-project.md
 │   ├── new-feature.md
 │   ├── validate-requirement.md
 │   ├── design-feature.md
 │   ├── create-plan.md
 │   ├── implement-next.md
 │   ├── validate-feature.md
-│   └── fix-bug.md
+│   ├── fix-bug.md
+│   └── feature-status.md
 └── scripts/
     ├── install.ps1
     ├── install.sh
@@ -559,6 +805,8 @@ The MVP is acceptable when all mandatory criteria below are demonstrated in a re
 13. The system does not require Gotilo, Supabase, BLoC, or any other project-specific technology to operate.
 14. Developer approval and safety gates are respected.
 15. Documentation explains setup, workflow entry points, project-specific configuration, and known limitations.
+16. The system can initialize an empty repository through an adaptive interactive onboarding dialogue, generating baseline project documentation, root instructions, and `.dev-team/project-context.md` without inventing speculative architecture.
+17. The system can onboard an existing repository across supported stacks (Flutter, Node.js, Python, etc.), extract actual technologies and architectural conventions into `.dev-team/project-context.md`, generate an initialization report, and avoid overwriting existing developer files without explicit authorization.
 
 ---
 
@@ -586,6 +834,9 @@ These milestones are a starting point for technical planning, not authorization 
 - Create the `dev-team` repository structure.
 - Define top-level instructions and product principles.
 - Define the initial workflow and quality-gate configuration.
+- Implement the foundational `project-initializer` skill (`skills/project-initializer/SKILL.md`) and structural verification script (`scripts/check-project-structure.py`).
+- Implement the standardized project template suite (`templates/project/`) covering root instructions and `docs/project/`.
+- Establish the persistent `.dev-team/` configuration schema and central context standard (`.dev-team/project-context.md`).
 - Document manual setup and user-level skill installation.
 - Add a basic workspace validation script only if it provides immediate value.
 
@@ -648,6 +899,9 @@ The following decisions should be confirmed during requirements review or techni
 5. Whether a project profile should be created manually, generated by project discovery, or use a review-and-confirm process.
 6. Which validation scripts are genuinely necessary for the first release.
 7. Whether the initial pilot will be Gotilo's Property Rating & Review feature.
+8. **Project initialization:** Establish `project-initializer` as the foundational Stage 1 lifecycle entry point, supporting both existing and empty repositories.
+9. **Central context source:** `.dev-team/project-context.md` serves as the single persistent source of project context across all Dev-Team skills and workflows.
+10. **Template modularity:** Standardized target project templates reside in `dev-team/templates/project/`, keeping Dev-Team reusable and project-agnostic.
 
 These decisions should not block review of the product's overall goals and workflow, but they must be resolved before the affected implementation work.
 
@@ -686,7 +940,7 @@ This document is a **draft**. It becomes the approved product requirements basel
 | Field | Value |
 |---|---|
 | Product | Dev-Team |
-| Requirements version | 1.0 |
+| Requirements version | 1.1 |
 | Status | Draft — pending approval |
 | Approved by | Pending |
 | Approval date | Pending |

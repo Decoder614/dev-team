@@ -71,10 +71,11 @@ For complete prerequisites, custom paths, and uninstallation instructions, see t
 
 ## 3. Engineering Workflows
 
-Dev-Team coordinates engineering through eight standard operating procedures:
+Dev-Team coordinates engineering through nine standard operating procedures:
 
 | Workflow | Entry Point | Primary Role | Activated Skill | Purpose |
 |---|---|---|---|---|
+| **Initialize Project** | `workflows/initialize-project.md` | Initializer / Architect | `project-initializer` | Onboard repository, classify state, establish persistent context |
 | **New Feature** | `workflows/new-feature.md` | Product Analyst | `product-requirements` | Draft requirements and acceptance criteria |
 | **Validate Requirement** | `workflows/validate-requirement.md` | Product Reviewer | `requirement-validation` | Independent requirements audit and gap check |
 | **Design Feature** | `workflows/design-feature.md` | System Architect | `system-design` | Technical architecture and data modeling |
@@ -97,10 +98,10 @@ Interface Layer (Codex CLI)
   └── Orchestration Layer (Root AGENTS.md & Approval Gates)
         ├── Configuration Layer (workflow.yaml, quality-gates.yaml, defaults.yaml)
         ├── Agent Layer (6 declarative role specifications in agents/*.toml)
-        ├── Skill Layer (9 reusable procedural skills in skills/*/SKILL.md)
-        ├── Workflow Layer (8 end-to-end procedures in workflows/*.md)
-        ├── Template Layer (6 standardized artifact formats in templates/*.md)
-        └── Project Context Layer (target AGENTS.md, .dev-team/project-profile.yaml)
+        ├── Skill Layer (10 reusable procedural skills in skills/*/SKILL.md)
+        ├── Workflow Layer (9 end-to-end procedures in workflows/*.md)
+        ├── Template Layer (Core templates & templates/project/ target scaffolding)
+        └── Project Context Layer (target AGENTS.md, rules.md, .dev-team/project-context.md, config.yaml)
 ```
 
 ### Mandatory Safety Gates
@@ -137,6 +138,7 @@ dev-team/
 │   └── qa-engineer.toml
 │
 ├── skills/                # Reusable procedural engineering skills
+│   ├── project-initializer/
 │   ├── product-requirements/
 │   ├── requirement-validation/
 │   ├── project-discovery/
@@ -148,6 +150,7 @@ dev-team/
 │   └── bug-fixing/
 │
 ├── workflows/             # End-to-end engineering workflows
+│   ├── initialize-project.md
 │   ├── new-feature.md
 │   ├── validate-requirement.md
 │   ├── design-feature.md
@@ -163,7 +166,8 @@ dev-team/
 │   ├── plan.md
 │   ├── task.md
 │   ├── bug-report.md
-│   └── qa-report.md
+│   ├── qa-report.md
+│   └── project/           # Target repository onboarding & baseline templates
 │
 ├── scripts/               # Deterministic automation and validation scripts
 │   ├── install.ps1

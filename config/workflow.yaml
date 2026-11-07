@@ -11,6 +11,11 @@ defaults:
   tasks_per_execution: 1
 
 workflows:
+  initialize_project:
+    enabled: true
+    description: "Onboard any repository, classify project state, gather context, and establish root instructions and persistent context"
+    entry_point: "workflows/initialize-project.md"
+
   new_feature:
     enabled: true
     description: "Convert informal product ideas into approved, validated requirements"

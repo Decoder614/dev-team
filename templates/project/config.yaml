@@ -1,0 +1,39 @@
+# .dev-team/config.yaml — Dev-Team Target Project Configuration
+# Declares project type, detected technology stack, active workflow enforcement, and paths.
+
+version: 1
+
+project:
+  name: "[Target App Name]"
+  # Supported types: flutter_application, web_app, backend_service, cli_tool, monorepo, library, desktop_app
+  type: flutter_application
+  description: "[Short description of the application or service]"
+
+technology:
+  frontend: "[e.g., Flutter, React, Vue, Next.js, or null for backend]"
+  language: "[e.g., Dart, TypeScript, Python, Rust, Go, Java, Kotlin]"
+  backend: "[e.g., Supabase, Firebase, FastAPI, Express, Spring Boot, or null]"
+  state_management: "[e.g., BLoC, Riverpod, Redux, Zustand, or null]"
+  navigation: "[e.g., GoRouter, React Router, Expo Router, or null]"
+  dependency_injection: "[e.g., GetIt, Riverpod, Inversify, Spring, or null]"
+  database: "[e.g., SQLite, PostgreSQL, MongoDB, Hive, or null]"
+
+engineering:
+  architecture: "[e.g., Clean Architecture, Feature-First, Layered, Hexagonal]"
+  testing: "[e.g., flutter_test, jest, pytest, cargo_test]"
+  linter: "[e.g., flutter_lints, eslint, ruff, clippy]"
+  package_manager: "[e.g., pub, npm, pnpm, poetry, pip, cargo, gradle, maven]"
+
+workflows:
+  require_requirement_approval: true
+  require_architecture_approval: true
+  require_plan_approval: true
+  require_qa_approval: true
+  auto_update_project_context: true
+
+documentation:
+  features_directory: ".dev-team/features"
+  project_docs_directory: "docs/project"
+  context_file: ".dev-team/project-context.md"
+  initialization_report_file: ".dev-team/initialization-report.md"
+

@@ -96,10 +96,15 @@ Declarative system policies governing behavior:
 - `defaults.yaml`: Standard paths, artifact statuses, and task lifecycle states.
 
 ### 2.8 Project Context Layer (Target Repository)
-Target project architecture, existing libraries, coding conventions, test commands, and feature artifacts discovered dynamically by Dev-Team:
+Target project architecture, existing libraries, coding conventions, test commands, and feature artifacts discovered or maintained by Dev-Team:
 - `AGENTS.md`: Target repository operating rules and project-specific instructions.
-- `.dev-team/project-profile.yaml`: Target technology stack, paths, and validation commands.
-- `.dev-team/features/<feature>/`: Feature artifacts generated throughout the lifecycle.
+- `rules.md`: Target repository coding standards, architectural patterns, and quality guidelines.
+- `DESIGN.md`: Target repository design system, color tokens, and typography guidelines (optional for backend/CLI projects).
+- `.dev-team/config.yaml`: Target technology stack, project type, enabled workflows, and documentation paths.
+- `.dev-team/project-context.md`: Canonical central source of truth for repository context, partitioning facts into confirmed truths (`CONFIRMED_FACTS`) versus active assumptions (`ACTIVE_ASSUMPTIONS`).
+- `.dev-team/initialization-report.md`: Audit record of detection, created files, skipped items, and open questions.
+- `.dev-team/features/<feature>/`: Feature artifacts generated throughout the lifecycle (`requirement.md`, `system-design.md`, `plan.md`, `task.md`, `qa-report.md`).
+- `docs/project/`: Baseline project documentation (`overview.md`, `requirements.md`, `system-design.md`, `plan.md`, `tech-stack.md`, `architecture.md`).
 
 ---
 
@@ -182,4 +187,5 @@ Key architectural decisions established for Dev-Team:
 - **ADR-008: Zero-Hallucination Progress Reporting:** Calculate progress strictly from on-disk artifact statuses, never heuristic guesses.
 - **ADR-009: Shared Skills Installation:** Install reusable skills to user-level Codex discovery directory (`~/.codex/skills/`) to avoid repo bloat.
 - **ADR-010: Deterministic Workspace Validation:** Use Python scripts (`validate-workspace.py`) to deterministically verify configurations and links.
+- **ADR-015: Project Initialization & Central Context Store:** Establish foundational repository onboarding via `project-initializer`, providing idempotent classification, truth-preserving interviews, and persistent canonical context in `.dev-team/project-context.md`.
 

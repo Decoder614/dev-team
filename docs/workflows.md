@@ -49,6 +49,7 @@ flowchart TD
 
 | # | Workflow ID | Entry Point | Primary Role | Activated Skill | Governing Gate | Primary Deliverable |
 |---|---|---|---|---|---|---|
+| **0** | `initialize_project` | `workflows/initialize-project.md` | Initializer / Architect | `project-initializer` | Initialization Gate | `.dev-team/project-context.md`, root instructions, `docs/project/` |
 | **1** | `new_feature` | `workflows/new-feature.md` | Product Analyst | `product-requirements` | Requirements Gate | `.dev-team/features/<f>/requirement.md` |
 | **2** | `requirement_validation` | `workflows/validate-requirement.md` | Product Reviewer | `requirement-validation` | Review Audit Gate | Audit report & resolved questions |
 | **3** | `feature_design` | `workflows/design-feature.md` | System Architect | `system-design`, `project-discovery` | Architecture Gate | `.dev-team/features/<f>/system-design.md` |
@@ -61,6 +62,19 @@ flowchart TD
 ---
 
 ## 3. Workflow Specifications
+
+### 3.0 Initialize Project Workflow (`workflows/initialize-project.md`)
+- **Role:** Developer (Orchestrator & Approver), System Architect
+- **Purpose:** Onboards any new or existing repository, deterministically classifies state, gathers verified facts without speculative invention, establishes root instructions and central context, and scaffolds baseline documentation.
+- **Entry Trigger:** Developer runs `/project-initializer`, "Initialize this repository for Dev-Team", or automatic detection of missing `.dev-team/project-context.md`.
+- **Governing Gate:** Foundational Initialization Gate (`SAFE-001`, `SAFE-002`, `SAFE-006`, `SAFE-010`, `SAFE-012`).
+- **Phases:**
+  1. Deterministic structure inspection via `check-project-structure.py`.
+  2. Project classification (`EXISTING`, `EMPTY`, `PARTIAL`).
+  3. Context gathering (code/manifest extraction vs adaptive interview).
+  4. Context validation and mandatory developer approval gate.
+  5. Scaffolding generation (`AGENTS.md`, `rules.md`, `DESIGN.md`, `.dev-team/config.yaml`, `.dev-team/project-context.md`, `docs/project/`).
+  6. Verification and audit reporting (`.dev-team/initialization-report.md`).
 
 ### 3.1 New Feature Workflow (`workflows/new-feature.md`)
 - **Role:** Product Analyst (`agents/product-analyst.toml`)

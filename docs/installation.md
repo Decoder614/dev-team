@@ -199,9 +199,24 @@ chmod +x scripts/install.sh
 
 Once Dev-Team skills are installed globally or locally, configure your target application repository to activate the virtual team workflows (`REQ-070`).
 
-### Step 1: Create `AGENTS.md` in Target Repository Root
+### Automated Initialization (Recommended)
 
-The target repository requires an `AGENTS.md` file that specifies operating rules, workflow entry points, and project-specific guidelines.
+Run the automated repository onboarding workflow within the target repository using Codex CLI:
+
+```text
+/project-initializer
+```
+Or instruct Codex:
+> *"Initialize this repository for Dev-Team"*
+
+This runs `workflows/initialize-project.md`, executes `check-project-structure.py`, identifies your tech stack, conducts an adaptive interview if empty, and instantiates the complete templates suite (`templates/project/`) establishing `AGENTS.md`, `rules.md`, `DESIGN.md`, `.dev-team/config.yaml`, `.dev-team/project-context.md`, and baseline docs under `docs/project/`.
+
+### Manual Initialization
+
+Alternatively, you can manually bootstrap the target repository:
+
+#### Step 1: Create `AGENTS.md` and `rules.md` in Target Repository Root
+Instantiate from `templates/project/AGENTS.md` and `templates/project/rules.md`.
 
 Example target `AGENTS.md`:
 
@@ -216,6 +231,7 @@ Engineering workflows follow the approved lifecycle:
 `Requirement -> System Design -> Plan -> Implementation -> QA Report -> Acceptance`.
 
 ## 2. Workflows & Skill Activation
+- Project Initialization: Invoke `initialize_project` workflow using `project-initializer` skill.
 - New Feature: Invoke `new-feature` workflow using `product-requirements` skill.
 - Requirements Audit: Invoke `validate-requirement` workflow using `requirement-validation` skill.
 - Technical Design: Invoke `design-feature` workflow using `project-discovery` and `system-design` skills.

@@ -3,9 +3,9 @@
 **Document type:** System Design Document (SDD)  
 **Product:** Dev-Team  
 **Repository:** `dev-team`  
-**Version:** 1.0  
-**Status:** Proposed — pending technical design approval  
-**Last updated:** 2026-11-04  
+**Version:** 1.1  
+**Status:** Proposed — pending technical design approval (Updated with Foundational Project Initialization Architecture)  
+**Last updated:** 2026-11-06  
 **Primary execution environment:** OpenAI Codex CLI
 
 ---
@@ -30,6 +30,8 @@ The architecture must remain:
 
 Dev-Team will use a **modular, skill-driven AI engineering architecture**.
 
+Before specialized engineering workflows can begin in any target repository, Dev-Team establishes repository context via a standardized onboarding and initialization architecture. Through the foundational `project-initializer` skill, Dev-Team introduces itself to any existing or new repository, understands its technology stack, architecture, and conventions, establishes shared context in `.dev-team/project-context.md`, and prepares the repository for future engineering workflows.
+
 The system will have one primary orchestration layer responsible for understanding the developer's request, selecting the appropriate workflow, coordinating specialized responsibilities, and enforcing approval gates.
 
 Specialized agents will handle distinct engineering responsibilities, while reusable skills will provide the actual procedural knowledge required to complete those responsibilities.
@@ -39,11 +41,11 @@ The target architecture is:
 - **Codex CLI:** Execution environment.
 - **AGENTS.md:** Repository-level operating instructions.
 - **Agents:** Specialized engineering roles.
-- **Skills:** Reusable engineering procedures and domain expertise.
-- **Workflows:** End-to-end process definitions.
-- **Templates:** Standardized engineering artifacts.
-- **Configuration:** Workflow and quality-gate settings.
-- **Project context:** Repository-specific information discovered from the target project.
+- **Skills:** Reusable engineering procedures and domain expertise (anchored by foundational onboarding).
+- **Workflows:** End-to-end process definitions governing complete lifecycles.
+- **Templates:** Standardized engineering artifacts and project documentation suites.
+- **Configuration:** Workflow, quality-gate, and project-level settings.
+- **Project context:** Centralized repository context (`.dev-team/project-context.md`) discovered or gathered from the target project.
 
 ## 1.3 Design principles
 
@@ -62,16 +64,30 @@ The target architecture is:
 
 ## 2.1 Architecture overview
 
-Dev-Team consists of six primary architectural layers.
+Dev-Team consists of six primary architectural layers coordinated across a standardized six-stage engineering lifecycle.
+
+### 2.1.1 Engineering Lifecycle Architecture
+
+```text
+Dev-Team Lifecycle Architecture:
+Stage 1: Project Initializer     --> Understand repository, classify project, establish persistent context
+Stage 2: Requirements & Planning --> Define features, structured requirements, and roadmap
+Stage 3: System Design           --> Architecture, technical decisions, schemas, and UX design
+Stage 4: Development             --> Controlled, one-task-at-a-time implementation via skills/agents
+Stage 5: Quality Assurance       --> Independent verification, testing, and requirement coverage
+Stage 6: Maintenance & Evolution --> Bug fixing, progress tracking, and documentation synchronization
+```
+
+### 2.1.2 Architectural Layers
 
 | Layer | Responsibility |
 |---|---|
 | Interface Layer | Accept developer requests through Codex CLI. |
-| Orchestration Layer | Understand requests, select workflows, and coordinate responsibilities. |
-| Agent Layer | Provide specialized engineering roles. |
-| Skill Layer | Provide reusable procedures and technical expertise. |
-| Artifact Layer | Store requirements, designs, plans, tasks, and QA reports. |
-| Project Context Layer | Discover and apply the target repository's conventions. |
+| Orchestration Layer | Understand requests, select workflows, enforce approval gates, and coordinate execution. |
+| Agent Layer | Provide specialized engineering roles (Product Analyst, Reviewer, Architect, Planner, Developer, QA). |
+| Skill Layer | Provide reusable procedures and technical expertise, anchored by the foundational `project-initializer`. |
+| Artifact Layer | Store standardized project documentation, root instructions, feature specs, plans, and QA reports. |
+| Project Context Layer | Maintain persistent target context (`.dev-team/project-context.md`) and configuration (`config.yaml`). |
 
 ## 2.2 System architecture diagram
 
@@ -81,7 +97,7 @@ flowchart TB
 
     subgraph CORE["Dev-Team Repository"]
         CLI[Codex CLI]
-        ROOT[AGENTS.md]
+        ROOT[AGENTS.md Operating Rules]
         ORCH[Workflow Orchestrator]
 
         subgraph AGENTS["Agent Layer"]
@@ -94,22 +110,49 @@ flowchart TB
         end
 
         subgraph SKILLS["Reusable Skill Layer"]
-            RS[Requirements Skills]
-            DS[Design Skills]
-            PS[Planning Skills]
-            FS[Flutter Development Skills]
-            QS[QA and Debugging Skills]
+            PI[Foundational: Project Initializer]
+            PD[Project Discovery]
+            RS[Product Requirements & Validation]
+            DS[System Design]
+            PS[Technical Planning]
+            FS[Flutter Development]
+            QS[Code Review & QA Validation]
+            BF[Bug Fixing]
         end
 
-        CFG[Configuration]
-        TPL[Templates]
+        CFG[Configuration: workflow.yaml, quality-gates.yaml]
+        
+        subgraph TPL["Templates Suite"]
+            FTPL[Feature Templates: req, design, plan, qa]
+            PTPL["Project Templates: AGENTS, rules, DESIGN, docs/project/*"]
+        end
     end
 
     subgraph PROJECT["Target Application Repository"]
-        CTX[Project Instructions and Profile]
+        subgraph ROOT_INST["Root Instructions"]
+            P_AGENTS[AGENTS.md]
+            P_RULES[rules.md]
+            P_DESIGN[DESIGN.md]
+        end
+
+        subgraph DEVTEAM_DIR[".dev-team/ Directory"]
+            P_CTX["project-context.md (Canonical Store)"]
+            P_CFG["config.yaml"]
+            P_RPT["initialization-report.md"]
+        end
+
+        subgraph PROJ_DOCS["docs/project/ Directory"]
+            P_OVERVIEW[overview.md]
+            P_REQS[requirements.md]
+            P_SD[system-design.md]
+            P_PLAN[plan.md]
+            P_TECH[tech-stack.md]
+            P_ARCH[architecture.md]
+        end
+
         SRC[Application Source Code]
-        TEST[Tests]
-        DOCS[Feature Documentation]
+        TEST[Tests & Verification Suite]
+        DOCS[Feature Artifacts]
     end
 
     DEV --> CLI
@@ -119,7 +162,17 @@ flowchart TB
     AGENTS --> SKILLS
     ORCH --> CFG
     ORCH --> TPL
-    ORCH <--> CTX
+    
+    %% Project Initializer bridges Dev-Team to Target Repo
+    PI --> ROOT_INST
+    PI --> DEVTEAM_DIR
+    PI --> PROJ_DOCS
+    
+    %% Downstream skills consume persistent context
+    ORCH <--> DEVTEAM_DIR
+    ORCH <--> ROOT_INST
+    ORCH <--> PROJ_DOCS
+    
     DE --> SRC
     QA --> TEST
     ORCH --> DOCS
@@ -174,6 +227,16 @@ dev-team/
 │   └── qa-engineer.toml
 │
 ├── skills/
+│   ├── project-initializer/
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   │   ├── project-detection.md
+│   │   │   ├── context-gathering.md
+│   │   │   ├── documentation-rules.md
+│   │   │   └── initialization-workflow.md
+│   │   └── scripts/
+│   │       └── check-project-structure.py
+│   │
 │   ├── product-requirements/
 │   │   └── SKILL.md
 │   │
@@ -202,6 +265,7 @@ dev-team/
 │       └── SKILL.md
 │
 ├── workflows/
+│   ├── initialize-project.md
 │   ├── new-feature.md
 │   ├── validate-requirement.md
 │   ├── design-feature.md
@@ -217,7 +281,17 @@ dev-team/
 │   ├── plan.md
 │   ├── task.md
 │   ├── bug-report.md
-│   └── qa-report.md
+│   ├── qa-report.md
+│   └── project/
+│       ├── AGENTS.md
+│       ├── rules.md
+│       ├── DESIGN.md
+│       ├── overview.md
+│       ├── requirements.md
+│       ├── system-design.md
+│       ├── plan.md
+│       ├── tech-stack.md
+│       └── architecture.md
 │
 ├── scripts/
 │   ├── install.ps1
@@ -249,19 +323,25 @@ Each definition describes an agent's role, responsibilities, boundaries, and exp
 
 ### `skills/`
 
-Contains reusable procedures and engineering knowledge.
+Contains reusable procedural skills and engineering domain expertise.
 
-Each skill should be independently discoverable and should load only when relevant.
+Skills are organized into two tiers:
+1. **Foundational Onboarding Skill (`project-initializer`):** Analyzes target repositories, conducts adaptive onboarding interviews, establishes root instructions and `.dev-team/project-context.md`, and prepares projects for downstream workflows.
+2. **Lifecycle & Domain Skills:** Specialized procedural guides for requirements, design, planning, development, testing, review, and defect resolution.
+
+Each skill is independently discoverable and loads only when relevant.
 
 ### `workflows/`
 
 Defines the sequence of activities required to complete a particular engineering process.
 
-Workflows coordinate agents and skills.
+Workflows coordinate agents and skills, beginning with the lifecycle entry point `workflows/initialize-project.md` and proceeding through feature development and maintenance.
 
 ### `templates/`
 
-Contains standardized document structures for engineering artifacts.
+Contains standardized document structures for engineering artifacts, partitioned into:
+- **Feature Artifact Templates:** Standardized schemas for feature requirements, system designs, plans, tasks, bug reports, and QA reports.
+- **Project Scaffolding Templates (`templates/project/`):** Standardized boilerplate for target repository root instructions (`AGENTS.md`, `rules.md`, `DESIGN.md`) and baseline documentation (`docs/project/`).
 
 ### `scripts/`
 
@@ -506,14 +586,29 @@ Detailed guidance should be placed in separate reference files when appropriate.
 
 ## 5.3 Initial skill categories
 
-| Category | Skills |
-|---|---|
-| Product engineering | Product Requirements, Requirement Validation |
-| Architecture | Project Discovery, System Design |
-| Planning | Technical Planning |
-| Development | Flutter Development |
-| Quality | Code Review, Feature Validation |
-| Maintenance | Bug Fixing |
+| Category | Skills | Purpose |
+|---|---|---|
+| **Foundational onboarding** | Project Initializer | Onboard any repository, classify project state, gather context, establish root instructions and `.dev-team/project-context.md`. |
+| **Product engineering** | Product Requirements, Requirement Validation | Transform ideas into testable requirements and audit them for gaps and conflicts. |
+| **Architecture** | Project Discovery, System Design | Targeted module inspection and technical architecture design based on repository reality. |
+| **Planning** | Technical Planning | Decompose architecture and requirements into small, sequenced implementation tasks. |
+| **Development** | Flutter Development | One-task-at-a-time implementation adhering to project conventions. |
+| **Quality** | Code Review, Feature Validation | Independent verification, testing, and requirement coverage analysis. |
+| **Maintenance** | Bug Fixing | Root-cause diagnosis, reproduction, minimal fix implementation, and regression prevention. |
+
+### 5.3.1 Structure of `project-initializer` Skill
+
+```text
+skills/project-initializer/
+├── SKILL.md                          # Primary activation and procedural guide
+├── references/
+│   ├── project-detection.md          # Multi-stack heuristics (Flutter, Node, Python, Java, Go, Rust)
+│   ├── context-gathering.md          # Adaptive interview guide and truth-preservation principles
+│   ├── documentation-rules.md        # Generation rules for AGENTS.md, rules.md, DESIGN.md, docs/project/
+│   └── initialization-workflow.md    # Six-phase execution procedure & error-handling rules
+└── scripts/
+    └── check-project-structure.py    # Deterministic structure analysis and manifest checker
+```
 
 ## 5.4 Skill activation
 
@@ -521,6 +616,7 @@ Skills should be activated based on the developer's request and current workflow
 
 Examples:
 
+- "Initialize this repository for Dev-Team", "Onboard this project", `/project-initializer`, or automatic detection of missing `.dev-team/project-context.md` → **Project Initializer**.
 - "Create requirements for this feature" → Product Requirements.
 - "Review this requirement" → Requirement Validation.
 - "Design this feature" → Project Discovery and System Design.
@@ -563,7 +659,57 @@ Every workflow should follow a predictable execution structure.
 
 Each workflow must define its entry conditions, required inputs, activities, outputs, approval gates, and exit conditions.
 
-## 6.2 Workflow A — New feature
+## 6.2 Workflow 0 — Project initialization and repository onboarding (Lifecycle Entry Point)
+
+**Entry point:** Explicit invocation via `/project-initializer` or automatic detection of an uninitialized target repository by other workflows.
+
+```mermaid
+flowchart TD
+    START([Developer: /project-initializer]) --> P1[Phase 1: Repository Discovery]
+    P1 --> P2[Phase 2: Project Classification]
+    
+    P2 -->|Existing Project| P3A[Extract Code, Manifests & Docs]
+    P2 -->|Empty Project| P3B[Adaptive Structured Interview]
+    P2 -->|Partial Project| P3C[Reuse Existing & Query Gaps]
+    
+    P3A --> P4[Phase 4: Context Validation]
+    P3B --> P4
+    P3C --> P4
+    
+    P4 --> CHK{Developer Confirmed?}
+    CHK -->|Needs Adjustments| P4
+    CHK -->|Approved| P5[Phase 5: Documentation Generation]
+    
+    P5 --> P6[Phase 6: Verification & Reporting]
+    P6 --> REPORT[initialization-report.md Generated]
+    REPORT --> READY([Repository Ready for Dev-Team Workflows])
+```
+
+### 6.2.1 Initialization Scenarios & Truth Preservation
+
+1. **Scenario A (Existing Project):**
+   - Automatically inspects manifests (`pubspec.yaml`, `package.json`, `pyproject.toml`, etc.).
+   - Discovers directory layouts, state management, routing, dependency injection, and testing suites.
+   - Solicits minimal developer input, focusing only on unresolved architectural ambiguities.
+2. **Scenario B (Empty Project):**
+   - Detects minimal or absent code.
+   - Conducts an adaptive interview capturing vision, target users, problem domain, proposed technology stack, and architectural preferences.
+   - **Truth Preservation Principle:** *Strictly forbids hallucinating or inventing architecture.* Unconfirmed decisions are explicitly marked as `ASSUMPTION` or `OPEN_DECISION`.
+
+### 6.2.2 Generated Artifact Categories
+
+1. **Root-Level Instructions:**
+   - `AGENTS.md`: AI agent operating entry point.
+   - `rules.md`: Coding standards, lint rules, and architectural constraints.
+   - `DESIGN.md`: UI/UX design tokens and design system guidelines (omitted for backend/CLI projects).
+2. **Standardized Project Documentation (`docs/project/`):**
+   - `overview.md`, `requirements.md`, `system-design.md`, `plan.md`, `tech-stack.md`, `architecture.md`.
+3. **Persistent Dev-Team Configuration (`.dev-team/`):**
+   - `config.yaml`: Structured metadata, enabled workflows, and project profile.
+   - `project-context.md`: Canonical source of truth consumed across all Dev-Team sessions and skills.
+   - `initialization-report.md`: Audit record of detection, created files, skipped items, and open questions.
+
+## 6.3 Workflow A — New feature
 
 **Entry point:** Developer provides a new feature idea.
 
@@ -602,7 +748,7 @@ Expected artifacts:
 
 Additional artifacts should be generated only when needed.
 
-## 6.3 Workflow B — Requirement validation
+## 6.4 Workflow B — Requirement validation
 
 Inputs:
 - Existing requirement document.
@@ -623,7 +769,7 @@ Possible outcomes:
 - APPROVED_WITH_FOLLOW_UPS
 - NEEDS_REVISION
 
-## 6.4 Workflow C — Feature design
+## 6.5 Workflow C — Feature design
 
 Activities:
 
@@ -639,7 +785,7 @@ Activities:
 
 The workflow should not create unnecessary architecture documents for trivial changes.
 
-## 6.5 Workflow D — Implementation planning
+## 6.6 Workflow D — Implementation planning
 
 Activities:
 
@@ -655,7 +801,7 @@ Activities:
 
 Output: `plan.md`
 
-## 6.6 Workflow E — Implement next task
+## 6.7 Workflow E — Implement next task
 
 Activities:
 
@@ -672,7 +818,7 @@ Activities:
 
 The workflow stops after one approved task by default.
 
-## 6.7 Workflow F — Feature validation
+## 6.8 Workflow F — Feature validation
 
 Activities:
 
@@ -686,7 +832,7 @@ Activities:
 8. Produce QA report.
 9. Recommend acceptance or further work.
 
-## 6.8 Workflow G — Bug fixing
+## 6.9 Workflow G — Bug fixing
 
 Activities:
 
@@ -701,7 +847,7 @@ Activities:
 9. Add regression tests.
 10. Validate the result.
 
-## 6.9 Workflow H — Feature status
+## 6.10 Workflow H — Feature status
 
 The workflow reads the actual feature artifacts and reports:
 
@@ -748,65 +894,80 @@ This creates two independent contexts:
 
 ## 7.2 Target project structure
 
-A target Flutter application may use the following arrangement:
+A target repository onboarded by Dev-Team uses the following standard arrangement:
 
 ```text
-example-app/
+target-repo/
 │
-├── AGENTS.md
+├── AGENTS.md                          # Primary AI agent operating instructions
+├── rules.md                           # Detailed coding standards & development constraints
+├── DESIGN.md                          # UI/UX design tokens & visual guidelines (when applicable)
 │
 ├── .dev-team/
-│   ├── project-profile.yaml
+│   ├── config.yaml                    # Project type, detected stack, active workflows, preferences
+│   ├── project-context.md             # Canonical central source of truth for repository context
+│   ├── initialization-report.md       # Audit report of initialization detection and open items
 │   │
-│   └── features/
+│   └── features/                      # Feature lifecycle artifacts
 │       ├── authentication/
 │       │   ├── requirement.md
 │       │   ├── system-design.md
 │       │   ├── plan.md
 │       │   └── qa-report.md
-│       │
 │       └── payments/
 │           ├── requirement.md
-│           ├── system-design.md
 │           └── plan.md
 │
-├── lib/
-├── test/
-├── pubspec.yaml
-└── ...
+├── docs/
+│   └── project/                       # High-level project baseline documentation
+│       ├── overview.md                # Project vision, target users, problem domain
+│       ├── requirements.md            # System-level functional & non-functional requirements
+│       ├── system-design.md           # High-level technical architecture & subsystem design
+│       ├── plan.md                    # Implementation roadmap and release milestones
+│       ├── tech-stack.md              # Frameworks, libraries, tools, and infrastructure
+│       └── architecture.md            # Code layout, module slicing, and architectural patterns
+│
+├── lib/ (or src/, app/)               # Application source code
+├── test/                              # Verification test suites
+└── pubspec.yaml (or package.json, etc.)
 ```
 
-This is a recommended convention, not a mandatory structure.
+This arrangement cleanly partitions concerns:
+- **Root instructions** govern agent behaviors and code rules.
+- **`.dev-team/`** contains persistent AI context and feature-level tracking.
+- **`docs/project/`** contains human- and agent-readable project architecture baselines.
 
-If the target project already has an established documentation structure, Dev-Team should use it instead of introducing unnecessary duplication.
+If the target project already has an established documentation convention, Dev-Team adapts to it without introducing unnecessary duplication or overwriting existing work.
 
-## 7.3 Project instructions
+## 7.3 Root-level instructions
 
-Each target repository should have its own `AGENTS.md`.
+Root instruction files establish clear, non-duplicative boundaries for AI interactions:
 
-It should describe:
-
-- Project overview.
-- Technology stack.
-- Architecture conventions.
-- Folder structure.
-- Coding standards.
-- Testing commands.
-- Important project restrictions.
-- Documentation locations.
+1. **`AGENTS.md` (Primary AI Entry Point):**
+   - Repository overview, role behaviors, and workflow routing instructions.
+   - Core operating principles and mandatory developer approval gates.
+   - Pointers to `rules.md`, `DESIGN.md`, and `.dev-team/project-context.md`.
+2. **`rules.md` (Project Coding Standards):**
+   - Detailed language conventions, formatting standards, and linter configurations.
+   - Architectural constraints (e.g. prohibited imports, immutability rules).
+   - Test conventions, mock usage guidelines, and naming conventions.
+3. **`DESIGN.md` (UI/UX Guidelines):**
+   - Color palettes, typography, spacing scales, and iconography.
+   - Common widget/component usage patterns and accessibility rules.
+   - *Created only when relevant (omitted for backend services, libraries, or CLI tools).*
 
 Project instructions take precedence over generic engineering recommendations when compatible with mandatory safety rules.
 
-## 7.4 Project profile
+## 7.4 Dev-Team configuration & central context store (.dev-team/)
 
-An optional `project-profile.yaml` provides structured information about the application.
+### 7.4.1 Configuration Schema (`.dev-team/config.yaml`)
 
-Example:
+Controls project-level workflow enforcement and records confirmed technologies:
 
 ```yaml
 project:
-  name: Example App
-  type: flutter_application
+  name: Target App
+  type: flutter_application # flutter_application, web_app, backend_service, cli_tool, monorepo, library
 
 technology:
   frontend: Flutter
@@ -819,32 +980,57 @@ technology:
 engineering:
   architecture: Clean Architecture
   testing: flutter_test
+  linter: flutter_lints
 
-design:
-  system: Custom Design System
+workflows:
+  require_plan_approval: true
+  require_architecture_approval: true
+  auto_update_project_context: true
 
 documentation:
   features_directory: .dev-team/features
+  project_docs_directory: docs/project
 ```
 
-Unknown information must not be fabricated.
+Unknown information must not be fabricated; unconfirmed fields remain unassigned until confirmed.
 
-The profile can be generated from repository discovery and confirmed by the developer.
+### 7.4.2 Central Context Store (`.dev-team/project-context.md`)
 
-## 7.5 Project discovery
+`.dev-team/project-context.md` acts as the persistent, canonical context store for the entire Dev-Team ecosystem. Rather than requiring individual agents to re-scan the entire codebase or interview the developer repeatedly:
+- All Dev-Team skills read `.dev-team/project-context.md` on activation.
+- Skills update this file when new architectural decisions, modules, or services are added.
+- The file maintains a clear distinction between `CONFIRMED_FACTS` and `ACTIVE_ASSUMPTIONS`.
 
-Before starting meaningful work, the system should inspect:
+### 7.4.3 Initialization Audit Report (`.dev-team/initialization-report.md`)
 
-1. `AGENTS.md`
-2. `pubspec.yaml`
-3. Relevant source folders.
-4. Existing feature implementations.
-5. Routing and state-management patterns.
-6. Dependency injection.
-7. API and backend integrations.
-8. Database migrations, when relevant.
-9. Existing tests.
-10. Design tokens and shared UI components.
+Records the exact outcomes of running `project-initializer`:
+- Detected technology manifests, frameworks, and versions.
+- Generated root instruction files, project documentation, and configs.
+- Skipped files (e.g. `DESIGN.md` skipped for backend projects).
+- Preserved user files that were not overwritten.
+- Unresolved decisions requiring future developer input.
+
+## 7.5 Project discovery & onboarding architecture
+
+Dev-Team provides two complementary levels of repository inspection:
+
+1. **Foundational Repository Onboarding (`project-initializer`):**
+   - Executed once upon introducing Dev-Team to a repository (or incrementally re-run).
+   - Performs comprehensive repository structure inspection, technology detection, interactive gap-filling, root instruction setup, and generates `.dev-team/project-context.md`.
+2. **Feature-Level Discovery (`project-discovery`):**
+   - Executed during feature design workflows (`workflows/design-feature.md`).
+   - Performs targeted, context-efficient inspections of specific modules, services, routes, or widgets relevant to the active feature without reloading unrelated repository context.
+   - When new architectural conventions are established during a feature, it updates `.dev-team/project-context.md`.
+
+Before starting feature work, the system inspects:
+
+1. `AGENTS.md` and `rules.md`
+2. `.dev-team/project-context.md` and `.dev-team/config.yaml`
+3. Package manifests (`pubspec.yaml`, `package.json`, etc.)
+4. Relevant feature and module folders
+5. Routing, state management, dependency injection, and data integrations
+6. Existing tests and test conventions
+7. Design tokens and shared UI components (`DESIGN.md` when applicable)
 
 Only relevant files should be inspected for the current task.
 
@@ -1339,6 +1525,7 @@ The following decisions are recommended for the initial implementation.
 | ADR-012 | QA strategy | Independent validation |
 | ADR-013 | Installation | Shared installation or symbolic linking |
 | ADR-014 | Automation | Lightweight local scripts |
+| ADR-015 | Project Initialization & Context Store | Foundational Stage 1 onboarding skill (`project-initializer`) and persistent central context (`.dev-team/project-context.md`) |
 
 ## 16.1 Important architectural constraint
 
@@ -1357,6 +1544,9 @@ Implementation should proceed incrementally.
 Objectives:
 - Establish repository structure.
 - Create root `AGENTS.md`.
+- Implement `project-initializer` foundational onboarding skill, references, and verification script (`check-project-structure.py`).
+- Implement target project templates suite (`templates/project/`) covering root instructions and baseline documentation.
+- Establish the persistent `.dev-team/` configuration schema and central context standard (`project-context.md`).
 - Define architectural conventions.
 - Create initial configuration files.
 - Document installation.
@@ -1364,6 +1554,7 @@ Objectives:
 Deliverables:
 - Repository foundation.
 - Basic system instructions.
+- Foundational `project-initializer` skill and project templates.
 - Configuration examples.
 
 ## Phase 2 — Product engineering capabilities
@@ -1472,6 +1663,8 @@ The architecture is considered successfully implemented when:
 14. No project requires a specific backend or state-management library.
 15. Installation and configuration are documented.
 16. The system respects all mandatory approval and safety boundaries.
+17. The system can initialize empty repositories via adaptive onboarding, establishing baseline docs and root instructions without inventing speculative architecture.
+18. The system can onboard existing repositories across supported stacks, establishing persistent context in `.dev-team/project-context.md` without destructive file overwrites.
 
 ---
 

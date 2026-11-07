@@ -236,8 +236,8 @@ def validate_dev_team_workspace(root_path, reporter):
     discovered_skills = {}
     if os.path.isdir(skills_dir):
         skill_folders = [d for d in os.listdir(skills_dir) if os.path.isdir(os.path.join(skills_dir, d))]
-        if len(skill_folders) < 9:
-            reporter.log_fail("Skill Count", f"Expected at least 9 reusable skills, found {len(skill_folders)}", skills_dir)
+        if len(skill_folders) < 10:
+            reporter.log_fail("Skill Count", f"Expected at least 10 reusable skills, found {len(skill_folders)}", skills_dir)
         else:
             reporter.log_pass("Skill Count", f"Found {len(skill_folders)} skill directories")
 
@@ -255,6 +255,28 @@ def validate_dev_team_workspace(root_path, reporter):
                 else:
                     reporter.log_pass(f"Skill Metadata: {s_folder}", f"Valid frontmatter name and description ({len(str(desc))} chars)")
                     discovered_skills[s_folder] = frontmatter
+
+        # 5b. Validate Project Initializer Assets (Milestone 1.5)
+        pi_folder = os.path.join(skills_dir, "project-initializer")
+        if os.path.isdir(pi_folder):
+            pi_script = os.path.join(pi_folder, "scripts", "check-project-structure.py")
+            if os.path.isfile(pi_script) and os.path.getsize(pi_script) > 100:
+                reporter.log_pass("Skill Script: check-project-structure.py", "Script exists and non-empty")
+            else:
+                reporter.log_fail("Skill Script Missing", "check-project-structure.py missing or empty", pi_script)
+
+            pi_refs = [
+                "project-detection.md",
+                "context-gathering.md",
+                "documentation-rules.md",
+                "initialization-workflow.md",
+            ]
+            for ref_name in pi_refs:
+                ref_path = os.path.join(pi_folder, "references", ref_name)
+                if os.path.isfile(ref_path) and os.path.getsize(ref_path) > 100:
+                    reporter.log_pass(f"Skill Reference: {ref_name}", "Reference guide exists and non-empty")
+                else:
+                    reporter.log_fail("Skill Reference Missing", f"Reference guide {ref_name} missing or empty", ref_path)
 
     # 6. Standard Templates
     templates_dir = os.path.join(root_path, "templates")
@@ -274,9 +296,37 @@ def validate_dev_team_workspace(root_path, reporter):
             else:
                 reporter.log_fail("Template File", f"Required template missing or empty: {tmpl}", tmpl_path)
 
+        # 6b. Project Scaffolding Templates (Milestone 1.5)
+        project_templates_dir = os.path.join(templates_dir, "project")
+        expected_project_templates = [
+            "AGENTS.md",
+            "rules.md",
+            "DESIGN.md",
+            "overview.md",
+            "requirements.md",
+            "system-design.md",
+            "plan.md",
+            "tech-stack.md",
+            "architecture.md",
+            "config.yaml",
+            "project-context.md",
+            "initialization-report.md",
+        ]
+        if os.path.isdir(project_templates_dir):
+            reporter.log_pass("Directory: templates/project/")
+            for p_tmpl in expected_project_templates:
+                p_tmpl_path = os.path.join(project_templates_dir, p_tmpl)
+                if os.path.isfile(p_tmpl_path) and os.path.getsize(p_tmpl_path) > 50:
+                    reporter.log_pass(f"Project Template: {p_tmpl}")
+                else:
+                    reporter.log_fail("Project Template File", f"Required project template missing or empty: {p_tmpl}", p_tmpl_path)
+        else:
+            reporter.log_fail("Directory Structure", "Missing templates/project/ directory", project_templates_dir)
+
     # 7. Workflows
     workflows_dir = os.path.join(root_path, "workflows")
     expected_workflows = [
+        "initialize-project.md",
         "new-feature.md",
         "validate-requirement.md",
         "design-feature.md",
@@ -366,12 +416,18 @@ def validate_target_repository(target_path, reporter):
         reporter.log_fail("Target Directory", f"Target path is not a directory: {target_path}", target_path)
         return
 
-    # 1. Target AGENTS.md
+    # 1. Target AGENTS.md & rules.md
     target_agents_md = os.path.join(target_path, "AGENTS.md")
     if os.path.isfile(target_agents_md):
         reporter.log_pass("Target AGENTS.md", "Target instructions file exists")
     else:
         reporter.log_fail("Target AGENTS.md", "Missing AGENTS.md operating instructions in target root", target_agents_md)
+
+    target_rules_md = os.path.join(target_path, "rules.md")
+    if os.path.isfile(target_rules_md):
+        reporter.log_pass("Target rules.md", "Target coding rules file exists")
+    else:
+        reporter.log_warn("Target rules.md", "rules.md coding standards not found in target root", target_rules_md)
 
     # 2. .dev-team directory
     dev_team_dir = os.path.join(target_path, ".dev-team")
@@ -380,9 +436,18 @@ def validate_target_repository(target_path, reporter):
     else:
         reporter.log_fail("Target .dev-team/", "Missing .dev-team directory in target repository", dev_team_dir)
 
-    # 3. project-profile.yaml
+    # 3. Target Configuration (.dev-team/config.yaml or project-profile.yaml)
+    config_yaml_path = os.path.join(dev_team_dir, "config.yaml")
     profile_path = os.path.join(dev_team_dir, "project-profile.yaml")
-    if os.path.isfile(profile_path):
+
+    if os.path.isfile(config_yaml_path):
+        cfg_data = parse_yaml_file(config_yaml_path, reporter)
+        if cfg_data:
+            if "version" in cfg_data and "project" in cfg_data:
+                reporter.log_pass("Target Config Schema", "Valid config.yaml")
+            else:
+                reporter.log_fail("Target Config Schema", "Missing required keys 'version' or 'project' in config.yaml", config_yaml_path)
+    elif os.path.isfile(profile_path):
         profile_data = parse_yaml_file(profile_path, reporter)
         if profile_data:
             if "version" in profile_data and "project" in profile_data:
@@ -390,9 +455,23 @@ def validate_target_repository(target_path, reporter):
             else:
                 reporter.log_fail("Target Profile Schema", "Missing required keys 'version' or 'project'", profile_path)
     else:
-        reporter.log_warn("Target Profile", "project-profile.yaml not found (recommended for framework discovery)", profile_path)
+        reporter.log_warn("Target Config", "Neither config.yaml nor project-profile.yaml found in .dev-team/", dev_team_dir)
 
-    # 4. features directory
+    # 4. Canonical Project Context (.dev-team/project-context.md)
+    ctx_path = os.path.join(dev_team_dir, "project-context.md")
+    if os.path.isfile(ctx_path) and os.path.getsize(ctx_path) > 50:
+        reporter.log_pass("Target Context Store", "Canonical project-context.md exists")
+    else:
+        reporter.log_warn("Target Context Store", "project-context.md not found or empty", ctx_path)
+
+    # 5. Baseline Documentation (docs/project/)
+    docs_project_dir = os.path.join(target_path, "docs", "project")
+    if os.path.isdir(docs_project_dir):
+        reporter.log_pass("Target docs/project/ Directory")
+    else:
+        reporter.log_warn("Target docs/project/", "docs/project/ directory not yet established", docs_project_dir)
+
+    # 6. features directory
     features_dir = os.path.join(dev_team_dir, "features")
     if os.path.isdir(features_dir):
         reporter.log_pass("Target features/ Directory")
