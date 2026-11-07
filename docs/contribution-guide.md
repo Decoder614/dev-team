@@ -177,7 +177,7 @@ Templates enforce consistent engineering artifacts across target projects and re
   | Field | Value |
   |---|---|
   | **Document Type** | [Requirement / Design / Plan / QA Report] |
-  | **Status** | DRAFT \| IN_REVIEW \| APPROVED \| NEEDS_REVISION |
+  | **Status** | DRAFT | IN_REVIEW | APPROVED | NEEDS_REVISION |
   | **Last Updated** | YYYY-MM-DD |
   | **Approved By** | [Developer Name or Pending] |
   ```
@@ -185,7 +185,49 @@ Templates enforce consistent engineering artifacts across target projects and re
 
 ---
 
-## 6. Workspace Validation & Testing
+## 6. Adding a Platform Adapter
+
+Dev-Team is platform-independent; platform integrations reside in `adapters/<platform-id>/`.
+
+### 6.1 Adapter Structure
+Each adapter must contain:
+1. `manifest.yaml`: Declarative manifest conforming to `schemas/adapter-manifest.schema.json`.
+2. `adapter.py`: Python adapter module implementing discovery path resolution, skill projection, and instruction file generation.
+
+### 6.2 Example Manifest
+```yaml
+id: my-platform
+name: My AI Coding Tool
+version: 1.0.0
+capabilities:
+  agent_skills: true
+  project_instructions: true
+  global_skills: true
+  project_skills: true
+  subagents: false
+  tool_execution: true
+
+locations:
+  global_skills_dir:
+    windows: "$USERPROFILE/.my-platform/skills"
+    unix: "~/.my-platform/skills"
+  project_skills_dir: ".my-platform/skills"
+  project_instructions: "INSTRUCTIONS.md"
+```
+
+---
+
+## 7. Adding CLI Commands
+
+Dev-Team CLI commands reside in `cli/src/commands/<command_name>.py`.
+- Each command must be a modular, self-contained handler.
+- Register commands in `cli/src/main.py`.
+- Ensure commands operate deterministically and exit with code 0 on success.
+- Never add LLM dependencies to the CLI.
+
+---
+
+## 8. Workspace Validation & Testing
 
 Always validate your changes deterministically before submitting:
 

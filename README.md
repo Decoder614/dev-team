@@ -35,37 +35,40 @@ Dev-Team provides a structured, specification-driven engineering system that:
 
 ---
 
-## 2. Quickstart & Installation
+## 2. Quickstart & Installation (CLI & Hybrid Distribution)
 
-Dev-Team skills can be installed globally into your user-level Codex skills directory or linked into specific target projects.
+Dev-Team provides a **CLI-first, hybrid distribution model**. You install the CLI and global skills once, then initialize and onboard any target repository.
 
-### 2.1 Windows Installation
-
-```powershell
-# Default installation (copies skills to ~/.codex/skills/)
-.\scripts\install.ps1
-
-# Symlink/junction installation (live updates from source repository)
-.\scripts\install.ps1 -Mode Symlink
-
-# Install directly into a specific target project repository
-.\scripts\install.ps1 -TargetRepo "C:\apps\my-project"
-```
-
-### 2.2 Unix / macOS Installation
+### 2.1 Bootstrap the CLI
 
 ```bash
-# Default installation
-./scripts/install.sh
-
-# Symlink mode
-./scripts/install.sh -m symlink
-
-# Install into a target project repository
-./scripts/install.sh -t "/path/to/my-project"
+# Install the Dev-Team CLI in editable/user mode
+pip install -e ./cli
 ```
 
-For complete prerequisites, custom paths, and uninstallation instructions, see the [Installation Guide](docs/installation.md).
+### 2.2 Global Skill Installation
+
+Install the canonical Dev-Team skills, templates, and adapters globally:
+
+```bash
+dev-team install --global --platform codex
+```
+
+### 2.3 Initialize Target Project & AI Onboarding
+
+Navigate to your target application repository:
+
+```bash
+cd /path/to/my-application
+
+# 1. Deterministic CLI initialization (creates .dev-team/ and links skills)
+dev-team init --mode hybrid --platform codex
+
+# 2. Contextual AI onboarding (inside OpenAI Codex CLI or supported shell)
+# Run: /project-initializer
+```
+
+For complete prerequisites, custom paths, and platform matrices, see the [Installation Guide](docs/installation.md) and [Platform Compatibility Guide](docs/platform-compatibility.md).
 
 ---
 
@@ -91,17 +94,14 @@ For comprehensive phase diagrams, prerequisites, and developer commands, see the
 
 ## 4. System Architecture & Boundaries
 
-Dev-Team operates across eight modular architectural layers:
+Dev-Team operates across five decoupled architectural layers:
 
 ```text
-Interface Layer (Codex CLI)
-  └── Orchestration Layer (Root AGENTS.md & Approval Gates)
-        ├── Configuration Layer (workflow.yaml, quality-gates.yaml, defaults.yaml)
-        ├── Agent Layer (6 declarative role specifications in agents/*.toml)
-        ├── Skill Layer (10 reusable procedural skills in skills/*/SKILL.md)
-        ├── Workflow Layer (9 end-to-end procedures in workflows/*.md)
-        ├── Template Layer (Core templates & templates/project/ target scaffolding)
-        └── Project Context Layer (target AGENTS.md, rules.md, .dev-team/project-context.md, config.yaml)
+Layer 1 — Developer Interface (Dev-Team CLI · AI Coding Agents)
+Layer 2 — Platform Adapters (Codex · Claude Code · Cursor · Copilot · Gemini)
+Layer 3 — Dev-Team Core (Skills · Workflows · Agents · Templates · Policies)
+Layer 4 — Project Context (.dev-team/ · project-context.md · config.yaml · local skills)
+Layer 5 — Target Repository (Application source code · Tests · CI/CD)
 ```
 
 ### Mandatory Safety Gates
@@ -124,65 +124,31 @@ dev-team/
 ├── LICENSE                # Open-source license (MIT)
 ├── .gitignore             # Ignored environment, cache, and OS files
 │
-├── config/                # System-wide configuration
-│   ├── workflow.yaml      # Workflow execution settings and defaults
-│   ├── quality-gates.yaml # Quality and acceptance criteria gates
-│   └── defaults.yaml      # Reusable system defaults
+├── cli/                   # Dedicated Dev-Team CLI engine (init, install, update, doctor)
 │
-├── agents/                # Specialized AI agent role definitions
-│   ├── product-analyst.toml
-│   ├── product-reviewer.toml
-│   ├── system-architect.toml
-│   ├── technical-planner.toml
-│   ├── developer.toml
-│   └── qa-engineer.toml
+├── adapters/              # Modular platform adapters (codex, claude-code, cursor, copilot, gemini)
 │
-├── skills/                # Reusable procedural engineering skills
-│   ├── project-initializer/
-│   ├── product-requirements/
-│   ├── requirement-validation/
-│   ├── project-discovery/
-│   ├── system-design/
-│   ├── technical-planning/
-│   ├── flutter-development/
-│   ├── code-review/
-│   ├── feature-validation/
-│   └── bug-fixing/
+├── schemas/               # JSON schemas (project-config, adapter-manifest, installation-manifest)
 │
-├── workflows/             # End-to-end engineering workflows
-│   ├── initialize-project.md
-│   ├── new-feature.md
-│   ├── validate-requirement.md
-│   ├── design-feature.md
-│   ├── create-plan.md
-│   ├── implement-next.md
-│   ├── validate-feature.md
-│   ├── fix-bug.md
-│   └── feature-status.md
+├── config/                # System-wide configuration (workflow.yaml, quality-gates.yaml, defaults.yaml)
 │
-├── templates/             # Standardized document templates
-│   ├── requirement.md
-│   ├── system-design.md
-│   ├── plan.md
-│   ├── task.md
-│   ├── bug-report.md
-│   ├── qa-report.md
-│   └── project/           # Target repository onboarding & baseline templates
+├── agents/                # Specialized AI agent role definitions (Analyst, Reviewer, Architect, etc.)
 │
-├── scripts/               # Deterministic automation and validation scripts
-│   ├── install.ps1
-│   ├── install.sh
-│   └── validate-workspace.py
+├── skills/                # Reusable procedural engineering skills (Agent Skills: SKILL.md)
+│
+├── workflows/             # End-to-end engineering workflows (new-feature, design-feature, etc.)
+│
+├── templates/             # Standardized document templates & target project scaffolding
+│
+├── scripts/               # Deterministic automation and workspace verification scripts
 │
 └── docs/                  # System documentation and project artifacts
     ├── architecture.md
     ├── installation.md
+    ├── platform-compatibility.md
     ├── workflows.md
     ├── contribution-guide.md
-    └── project/           # Internal Dev-Team specifications
-        ├── requirements.md
-        ├── system-design.md
-        └── plan.md
+    └── project/           # Internal Dev-Team specifications (requirements, system-design, plan)
 ```
 
 ---

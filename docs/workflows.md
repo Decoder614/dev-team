@@ -65,16 +65,19 @@ flowchart TD
 
 ### 3.0 Initialize Project Workflow (`workflows/initialize-project.md`)
 - **Role:** Developer (Orchestrator & Approver), System Architect
-- **Purpose:** Onboards any new or existing repository, deterministically classifies state, gathers verified facts without speculative invention, establishes root instructions and central context, and scaffolds baseline documentation.
-- **Entry Trigger:** Developer runs `/project-initializer`, "Initialize this repository for Dev-Team", or automatic detection of missing `.dev-team/project-context.md`.
+- **Purpose:** Onboards any new or existing repository through a two-tier process: deterministic CLI bootstrapping followed by contextual AI onboarding. It classifies repository state, gathers verified facts without speculative invention, establishes root instructions and central context (`.dev-team/project-context.md`), and scaffolds baseline documentation.
+- **Entry Triggers:**
+  - *Tier 1 (CLI Bootstrap):* Developer executes `dev-team init --mode hybrid --platform <platform>` in the terminal.
+  - *Tier 2 (AI Onboarding):* Developer invokes `/project-initializer` in their AI coding shell (or automatic prompt when `.dev-team/project-context.md` is absent).
 - **Governing Gate:** Foundational Initialization Gate (`SAFE-001`, `SAFE-002`, `SAFE-006`, `SAFE-010`, `SAFE-012`).
 - **Phases:**
-  1. Deterministic structure inspection via `check-project-structure.py`.
-  2. Project classification (`EXISTING`, `EMPTY`, `PARTIAL`).
-  3. Context gathering (code/manifest extraction vs adaptive interview).
-  4. Context validation and mandatory developer approval gate.
-  5. Scaffolding generation (`AGENTS.md`, `rules.md`, `DESIGN.md`, `.dev-team/config.yaml`, `.dev-team/project-context.md`, `docs/project/`).
-  6. Verification and audit reporting (`.dev-team/initialization-report.md`).
+  1. **CLI Workspace Bootstrap:** `dev-team init` detects workspace, scaffolds `.dev-team/config.yaml`, creates skill projections in platform discovery paths, and logs `installation-manifest.json`.
+  2. **Deterministic Structure Inspection:** Analysis of directory layout, configs, and manifests via `check-project-structure.py`.
+  3. **Project Classification:** Categorizes project as `EXISTING`, `EMPTY`, or `PARTIAL`.
+  4. **Context Gathering:** Code/manifest extraction (for existing projects) or adaptive structured interview (for empty/partial projects).
+  5. **Context Validation Gate:** Mandatory developer review separating `CONFIRMED_FACTS` from `ACTIVE_ASSUMPTIONS` before generating files (`SAFE-001`).
+  6. **Documentation Scaffolding:** Instantiates root instructions (`AGENTS.md`, `rules.md`, `DESIGN.md`), `.dev-team/project-context.md`, and baseline specifications in `docs/project/`.
+  7. **Verification & Audit Reporting:** Emits `.dev-team/initialization-report.md` and updates `initialization.status: completed` in `config.yaml`.
 
 ### 3.1 New Feature Workflow (`workflows/new-feature.md`)
 - **Role:** Product Analyst (`agents/product-analyst.toml`)

@@ -1,344 +1,217 @@
 # Dev-Team Installation & Configuration Guide
 
 > **Specification-Driven AI Software Development Team**  
-> Comprehensive setup instructions for deploying Dev-Team skills and workflows across independent target repositories.
+> Comprehensive setup instructions for deploying Dev-Team skills, CLI, and workflows across independent target repositories (Version 1.1).
 
 ---
 
 ## 1. Overview & Architecture
 
-Dev-Team is a reusable, modular framework that coordinates specialized engineering roles using the OpenAI Codex CLI. It follows a strict **separation of concerns**:
+Dev-Team provides a **CLI-first, hybrid-distribution** architecture that coordinates specialized engineering roles across independent repositories:
 
-- **Reusable Framework (`dev-team`):** General workflows, role specifications (`agents/`), reusable procedural skills (`skills/`), standardized templates (`templates/`), and quality configuration (`config/`) remain strictly project-agnostic (`REQ-071`).
-- **Target Application Repositories:** Framework-specific conventions, business logic, architecture records, and task documentation reside exclusively inside each target project's repository under `AGENTS.md` and `.dev-team/` (`REQ-070`).
-
-Target applications consume Dev-Team capabilities through the Codex CLI's built-in skill discovery mechanism without duplicating the entire framework repository (`REQ-067`, `REQ-069`).
+- **Dedicated Dev-Team CLI (`dev-team`):** Deterministic tool managing installation, initialization, updates, and diagnostics without requiring an LLM (`REQ-066`, `REQ-067`, `REQ-072`).
+- **Global Installation (`~/.dev-team/`):** Centrally stores reusable Agent Skills (`SKILL.md`), templates, and platform adapters (`REQ-069`, `REQ-071`).
+- **Target Application Repositories (`.dev-team/`):** Each target repository maintains its own isolated configuration (`config.yaml`), persistent context (`project-context.md`), and optional local custom skills (`REQ-070`).
+- **Platform Adapters:** Expose reusable skills to target AI coding platforms (OpenAI Codex CLI, Claude Code, Cursor, Copilot, Gemini).
 
 ---
 
 ## 2. Prerequisites
 
-Before installing Dev-Team, ensure the following tools are available on your system:
-
-| Component | Minimum Version | Verification Command | Notes |
+| Tool | Minimum Version | Verification Command | Notes |
 |---|---|---|---|
-| **OpenAI Codex CLI** | Any supported release | `codex --version` | Must be authenticated and operational. |
-| **Python** | 3.10+ | `python --version` | Required for deterministic workspace validation scripts (`REQ-072`). |
-| **Git** | 2.30+ | `git --version` | Required for version control and status inspection. |
-| **PowerShell** | 5.1+ (Windows) | `$PSVersionTable.PSVersion` | Required for Windows automated installation (`install.ps1`). |
-| **Bash / POSIX Shell** | Bash 4.0+ / POSIX | `bash --version` | Required for Unix-like automated installation (`install.sh`). |
+| **Python** | 3.10+ | `python --version` | Required for the Dev-Team CLI engine (`REQ-021`, `REQ-072`). |
+| **Git** | 2.30+ | `git --version` | Required for repository detection and status checks. |
+| **AI Coding Platform** | Current release | `codex --version` / `claude --version` | OpenAI Codex CLI (initial reference integration) or other supported platform. |
+| **PowerShell / Bash** | PS 5.1+ / Bash 4+ | `$PSVersionTable.PSVersion` / `bash --version` | System shell for environment setup and automated script installation. |
 
 ---
 
 ## 3. Supported Codex Skill Discovery
 
-OpenAI Codex CLI automatically discovers procedural skills from designated directories:
+OpenAI Codex CLI automatically discovers procedural skills from designated directories (`REQ-067`, `REQ-071`):
 
 1. **User-Level Skills (Global):**
    - **Windows:** `$env:USERPROFILE\.codex\skills\` (or `$env:CODEX_HOME\skills\` if set)
    - **Unix / macOS:** `~/.codex/skills/` (or `$CODEX_HOME/skills` if set)
    - *Behavior:* Skills placed in this directory are available across **all** repositories and workspaces opened with Codex CLI.
 
-2. **Repository-Level Skills (Local):**
-   - `<repository-root>/.codex/skills/` or `<repository-root>/skills/`
-   - *Behavior:* Skills placed here are scoped strictly to the current workspace.
+2. **Repository-Level Skills (Local Projection):**
+   - `<workspace>/.agents/skills/` or `<workspace>/.codex/skills/`
+   - *Behavior:* Skills projected here are scoped strictly to the current workspace.
 
 ### Reusable Skills Packaging
-
-Each skill in `dev-team/skills/` conforms to the standard Codex skill specification (`REQ-067`):
-
-```text
-skills/<skill-name>/
-└── SKILL.md
-```
-
-The `SKILL.md` file contains YAML frontmatter defining `name` and `description` triggers, followed by modular procedural instructions:
-
-```yaml
----
-name: <skill-name>
-description: Reusable procedural skill for ... Activate when ...
----
-```
+Each skill in `dev-team/skills/` conforms to the standard Agent Skills specification (`SKILL.md` with YAML frontmatter).
 
 ---
 
 ## 4. Installation Strategies
 
-Dev-Team provides two primary installation strategies (`ADR-013`):
+Dev-Team supports three primary installation strategies (`REQ-069`, `ADR-016`):
 
-### Option A — Shared Skill Installation (Copy Mode, Recommended Default)
+### Option A — Hybrid Mode (Recommended Default)
+```bash
+dev-team init --mode hybrid --platform codex
+```
+- Core reusable skills reside centrally in `~/.dev-team/skills/`.
+- Target repository creates `.dev-team/` for local configuration and context.
+- Skill projections are safely linked into the platform discovery location (`.agents/skills/`).
+- Maximum efficiency, zero unnecessary file duplication, and clean project isolation.
 
-Copies each reusable skill directory from `dev-team/skills/` into the user-level Codex skills directory.
+### Option B — Global Mode
+```bash
+dev-team install --global --platform codex
+```
+- Installs canonical skills directly to user-level discovery (`~/.codex/skills/` or `~/.dev-team/`).
+- Available across all workspaces without modifying repository files.
 
-- **Advantages:**
-  - Fully decoupled from the location of the `dev-team` repository clone.
-  - Safe, immutable, and does not require administrative privileges.
-  - Fully portable across all user workspaces.
-- **Trade-off:**
-  - When updating Dev-Team, you must re-run the installer to copy the latest skills.
-
-### Option B — Symbolic Linking (Symlink / Junction Mode)
-
-Creates filesystem links from the user-level Codex skills directory pointing directly to the `dev-team/skills/` directories.
-
-- **Advantages:**
-  - Real-time updates: Edits in `dev-team` take effect immediately without re-installing.
-  - Zero disk duplication.
-- **Trade-off:**
-  - On Windows, creating symbolic links requires Developer Mode or administrator privileges. If privileges are absent, the installer automatically falls back to NTFS Directory Junctions (`mklink /J`).
+### Option C — Project Copy Mode
+```bash
+dev-team init --mode copy
+```
+- Copies independent skill directories directly into the target project workspace.
+- Useful for offline or restricted environments where filesystem links are prohibited.
 
 ---
 
 ## 5. Automated Installation on Windows
 
-Use the PowerShell installer `scripts/install.ps1` (`Task M8-T02`).
-
-### 5.1 Basic Installation (Copy Mode)
-
-Open PowerShell and run:
-
+### 5.1 CLI-First Installation (Recommended)
+Install the CLI and global skills:
 ```powershell
-# From the dev-team repository root
+# From the dev-team clone
+pip install -e .\cli
+
+# Install global skills and Codex platform integration
+dev-team install --global --platform codex
+```
+
+### 5.2 PowerShell Script Installation (`scripts/install.ps1`)
+Alternatively, use the deterministic PowerShell bootstrap script:
+```powershell
+# Default installation (copies skills to user Codex skills directory)
 .\scripts\install.ps1
-```
 
-By default, this installs all skills to `$env:USERPROFILE\.codex\skills\`.
-
-### 5.2 Symlink / Junction Mode
-
-To link skills directly from the source repository:
-
-```powershell
+# Symlink / Junction mode
 .\scripts\install.ps1 -Mode Symlink
-```
 
-### 5.3 Custom Codex Skills Directory
+# Target repository installation
+.\scripts\install.ps1 -TargetRepo "C:\apps\my-project"
 
-If your Codex configuration uses a custom directory or `$env:CODEX_HOME`:
-
-```powershell
-.\scripts\install.ps1 -CodexDir "D:\CustomCodex\skills"
-```
-
-### 5.4 Target Repository Installation
-
-To install skills directly into a specific target application repository:
-
-```powershell
-.\scripts\install.ps1 -TargetRepo "E:\apps\my-flutter-app"
-```
-
-This installs skills into `E:\apps\my-flutter-app\.codex\skills\` and initializes the target directory structure (`.dev-team/`).
-
-### 5.5 Dry-Run Mode
-
-Preview actions without modifying the filesystem:
-
-```powershell
+# Dry-run preview
 .\scripts\install.ps1 -DryRun
-```
-
-### 5.6 Uninstallation
-
-To cleanly remove only the Dev-Team skills while **strictly preserving** any other user-installed skills:
-
-```powershell
-.\scripts\install.ps1 -Uninstall
 ```
 
 ---
 
-## 6. Automated Installation on Unix / macOS
+## 6. Automated Installation on Unix
 
-Use the POSIX-compliant shell script `scripts/install.sh` (`Task M8-T03`).
-
-### 6.1 Basic Installation (Copy Mode)
-
+### 6.1 CLI-First Installation (Recommended)
 ```bash
-# Make script executable if necessary
-chmod +x scripts/install.sh
+# Install the CLI
+pip install -e ./cli
 
-# Run standard installation
+# Install global skills
+dev-team install --global --platform codex
+```
+
+### 6.2 Bash Script Installation (`scripts/install.sh`)
+Alternatively, use the POSIX shell bootstrap script:
+```bash
+# Default installation
 ./scripts/install.sh
-```
 
-### 6.2 Symlink Mode
-
-```bash
+# Symlink mode
 ./scripts/install.sh -m symlink
-```
 
-### 6.3 Custom Codex Skills Directory
+# Target repository installation
+./scripts/install.sh -t "/path/to/my-project"
 
-```bash
-./scripts/install.sh -d "$HOME/.custom-codex/skills"
-```
-
-### 6.4 Target Repository Installation
-
-```bash
-./scripts/install.sh -t "/path/to/my-application"
-```
-
-### 6.5 Dry-Run Mode
-
-```bash
+# Dry-run preview
 ./scripts/install.sh -n
-```
-
-### 6.6 Uninstallation
-
-```bash
-./scripts/install.sh -u
 ```
 
 ---
 
 ## 7. Configuring a Target Repository
 
-Once Dev-Team skills are installed globally or locally, configure your target application repository to activate the virtual team workflows (`REQ-070`).
+To onboard any target software repository for Dev-Team:
 
-### Automated Initialization (Recommended)
+### Step 1: Deterministic CLI Initialization
+Navigate to the target application repository:
+```bash
+cd /path/to/my-application
+dev-team init --platform codex --mode hybrid
+```
+This command sets up `.dev-team/config.yaml`, creates skill projections in `.agents/skills/`, and writes `installation-manifest.json` (`REQ-067`, `REQ-070`).
 
-Run the automated repository onboarding workflow within the target repository using Codex CLI:
-
+### Step 2: Contextual AI Onboarding (`/project-initializer`)
+Open the target repository in OpenAI Codex CLI and run:
 ```text
-/project-initializer
+> /project-initializer
 ```
-Or instruct Codex:
-> *"Initialize this repository for Dev-Team"*
-
-This runs `workflows/initialize-project.md`, executes `check-project-structure.py`, identifies your tech stack, conducts an adaptive interview if empty, and instantiates the complete templates suite (`templates/project/`) establishing `AGENTS.md`, `rules.md`, `DESIGN.md`, `.dev-team/config.yaml`, `.dev-team/project-context.md`, and baseline docs under `docs/project/`.
-
-### Manual Initialization
-
-Alternatively, you can manually bootstrap the target repository:
-
-#### Step 1: Create `AGENTS.md` and `rules.md` in Target Repository Root
-Instantiate from `templates/project/AGENTS.md` and `templates/project/rules.md`.
-
-Example target `AGENTS.md`:
-
-```markdown
-# AGENTS.md — Target Project Operating Instructions
-
-> Operating instructions for OpenAI Codex CLI in this project.
-
-## 1. Project Overview & Dev-Team Integration
-This repository uses the Dev-Team specification-driven engineering framework.
-Engineering workflows follow the approved lifecycle:
-`Requirement -> System Design -> Plan -> Implementation -> QA Report -> Acceptance`.
-
-## 2. Workflows & Skill Activation
-- Project Initialization: Invoke `initialize_project` workflow using `project-initializer` skill.
-- New Feature: Invoke `new-feature` workflow using `product-requirements` skill.
-- Requirements Audit: Invoke `validate-requirement` workflow using `requirement-validation` skill.
-- Technical Design: Invoke `design-feature` workflow using `project-discovery` and `system-design` skills.
-- Planning: Invoke `create-plan` workflow using `technical-planning` skill.
-- Implementation: Invoke `implement-next` workflow using `flutter-development` or domain skills.
-- Verification: Invoke `validate-feature` workflow using `feature-validation` and `code-review` skills.
-- Bug Fixing: Invoke `fix-bug` workflow using `bug-fixing` skill.
-- Feature Status: Invoke `feature-status` workflow.
-
-## 3. Mandatory Safety Boundaries
-- SAFE-001: Requirements must be approved by developer prior to implementation.
-- SAFE-002: Architecture and schema changes require developer approval.
-- SAFE-003: Technical plan must be approved prior to starting code modifications.
-- SAFE-009: Never claim tests passed without executing verification commands and observing output.
-- SAFE-010: Never overwrite uncommitted developer changes.
-```
-
-### Step 2: Initialize `.dev-team/project-profile.yaml`
-
-Create `.dev-team/project-profile.yaml` to inform Dev-Team of your project's technology stack, test commands, and conventions:
-
-```yaml
-version: 1
-project:
-  name: "my-app"
-  framework: "flutter" # or react, node, django, go, etc.
-  language: "dart"
-
-paths:
-  features_directory: ".dev-team/features"
-  source_directory: "lib"
-  test_directory: "test"
-
-validation:
-  test_command: "flutter test"
-  analyze_command: "flutter analyze"
-  format_command: "dart format --output=none --set-exit-if-changed ."
-```
-
-### Step 3: Feature Artifact Directory
-
-Feature specifications, design docs, plans, and QA reports will be organized under:
-
-```text
-.dev-team/features/<feature-name>/
-├── requirement.md
-├── system-design.md
-├── plan.md
-├── tasks/ (optional)
-└── qa-report.md
-```
+The AI onboarding skill:
+1. Inspects repository manifests, dependencies, and code structure.
+2. Classifies project state (`EXISTING`, `EMPTY`, or `PARTIAL`).
+3. Gathers confirmed facts versus active assumptions.
+4. Requests developer approval before generating files (`SAFE-001`).
+5. Scaffolds `AGENTS.md`, `rules.md`, `DESIGN.md`, and baseline `docs/project/`.
+6. Establishes the canonical context store in `.dev-team/project-context.md`.
 
 ---
 
 ## 8. Verifying Your Installation
 
-Use the workspace validation utility `scripts/validate-workspace.py` (`Task M8-T04`) to verify system integrity:
+Validate your Dev-Team setup and workspace health using `dev-team doctor`:
 
 ```bash
-# Validate Dev-Team workspace
-python scripts/validate-workspace.py
+# Run installation diagnostics
+dev-team doctor
 
-# Validate a target project repository
-python scripts/validate-workspace.py --target "/path/to/target-project"
+# Verbose inspection of paths, manifests, and hashes
+dev-team doctor --verbose
 ```
 
-A return code of `0` indicates all directories, configurations, skills, and templates are structurally valid.
+You can also run the deterministic workspace validator script:
+```bash
+python scripts/validate-workspace.py --verbose
+```
 
 ---
 
-## 9. Troubleshooting
+## 9. Uninstallation & Cleanup
 
-### Problem: Codex CLI does not discover installed skills
-- **Cause:** Codex CLI caches skills at startup or looks at a different user home directory.
-- **Solution:** 
-  1. Restart your Codex CLI session.
-  2. Verify that `$env:USERPROFILE\.codex\skills` (Windows) or `~/.codex/skills` (Unix) contains subdirectories with `SKILL.md`.
-  3. Ensure YAML frontmatter in `SKILL.md` starts on line 1 with `---`.
+Dev-Team provides safe, non-destructive removal of managed files:
 
-### Problem: Symlink creation failed on Windows
-- **Cause:** Windows requires administrator privileges or Developer Mode to create symbolic links.
-- **Solution:** 
-  - `install.ps1` automatically detects this and falls back to NTFS Junctions (`mklink /J`), which require no administrator privileges.
-  - Alternatively, use Copy Mode: `.\scripts\install.ps1 -Mode Copy`.
+### CLI Removal
+```bash
+# Remove global Dev-Team assets and links
+dev-team uninstall --global
 
-### Problem: Target repository has an existing `AGENTS.md`
-- **Cause:** Repository already has local agent rules.
-- **Solution:** Merge the Dev-Team workflow entry points into your existing `AGENTS.md`. Target project instructions always take precedence over generic instructions (`REQ-070`).
+# Remove project-level projections and configuration
+dev-team uninstall --project
+```
 
----
-
-## 10. Uninstallation & Cleanup
-
-To remove Dev-Team skills completely:
-
+### Script Cleanup
 ```powershell
 # Windows
 .\scripts\install.ps1 -Uninstall
 ```
-
 ```bash
-# Unix / macOS
+# Unix
 ./scripts/install.sh -u
 ```
+> **Safety Guarantee:** Uninstallation deletes *only* files tracked as managed in the installation manifest. Unrelated developer files, custom skills, and application code are strictly preserved.
 
-The uninstallation scripts:
-1. Scan for skills originally installed by Dev-Team.
-2. Remove only those matching directories or links.
-3. Leave all non-Dev-Team skills untouched.
+---
 
+## 10. Troubleshooting & FAQ
+
+### Q: Does Dev-Team alter application source code during installation?
+**No.** `dev-team init` operates non-invasively (`REQ-075`). It only creates `.dev-team/`, platform discovery projections, and initial documentation. Your source code and architecture remain untouched.
+
+### Q: How do symlinks work on Windows?
+On Windows 10/11, symbolic links require Developer Mode or elevated privileges. If privileges are absent, the Dev-Team CLI automatically falls back to **NTFS Directory Junctions** (`mklink /J`), which require no administrator rights. If junctions are unsupported, it falls back to safe file copies.
+
+### Q: Can I customize a skill for a specific project?
+**Yes.** Place your customized skill in `<project-root>/.dev-team/skills/<skill-name>/SKILL.md`. Dev-Team's resolution engine always gives project-local skills higher priority than globally installed skills (`REQ-081`).

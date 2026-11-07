@@ -4,11 +4,11 @@
 **Project:** Dev-Team  
 **Repository:** `dev-team`  
 **Version:** 1.1  
-**Status:** approved  
+**Status:** Approved (v1.1 Roadmap)  
 **Last updated:** 2026-11-06  
 **Based on:**
-- `requirements.md` — Approved (v1.1)
-- `system-design.md` — Approved (v1.1)
+- `requirements.md` — Approved v1.1
+- `system-design.md` — Approved v1.1
 
 ---
 
@@ -16,1600 +16,311 @@
 
 ## 1.1 Objective
 
-Implement Dev-Team as a reusable, local AI-powered software engineering framework using OpenAI Codex CLI.
+Implement Dev-Team as a cross-platform, reusable AI-assisted software development toolkit based on the approved v1.1 architecture:
+1. **Hybrid distribution:** Globally installable core skills reused across independent repositories, paired with isolated project configuration, context, and custom skills under `.dev-team/`.
+2. **CLI-first installation:** A dedicated, lightweight `dev-team` CLI managing installation, initialization, updates, and diagnostics.
+3. **Platform-independent core:** Agent Skills (`SKILL.md`) isolated from proprietary APIs and integrated via modular platform adapters (initial platform: OpenAI Codex CLI).
+4. **Foundational project initialization:** A two-tier onboarding architecture separating deterministic CLI bootstrapping (`dev-team init`) from contextual AI project onboarding (`project-initializer`).
+5. **Specification-driven engineering lifecycle:** Modular workflows guiding features from requirements through design, planning, controlled implementation, QA, and defect repair.
 
-The implementation must establish a system capable of managing the complete software development lifecycle:
+## 1.2 Execution Strategy
 
-1. Project onboarding and repository initialization.
-2. Product requirements.
-3. Requirement validation.
-4. Project discovery.
-5. System design.
-6. Technical planning.
-7. Controlled implementation.
-8. Code review.
-9. Feature validation.
-10. Bug diagnosis and fixing.
-11. Feature status reporting.
-
-Dev-Team itself will be developed using the same engineering principles it is designed to provide to other projects.
-
-## 1.2 Implementation strategy
-
-The project will follow a milestone-based implementation strategy.
-
-Each milestone will contain small, independently verifiable tasks.
-
-The execution process will be:
+The project follows a sequenced, eight-milestone implementation roadmap:
 
 ```text
-Approved Implementation Plan
-          |
-          v
-Select Next Pending Task
-          |
-          v
-Inspect Dependencies and Context
-          |
-          v
-Implement One Task
-          |
-          v
-Run Relevant Validation
-          |
-          v
-Review Deliverables
-          |
-          v
-Update Task Status
-          |
-          v
-Proceed to Next Task
+M1: Core Foundation ──► M2: CLI Foundation ──► M3: Hybrid Distribution ──► M4: Project Initializer
+                                                                                    │
+M8: Pilot & Refinement ◄── M7: Additional Adapters ◄── M6: Engineering Workflows ◄──┘
+                                                                ▲
+                                                    M5: Codex Integration
 ```
 
-No task should be marked complete without satisfying its acceptance criteria.
-
-## 1.3 Implementation principles
-
-- Implement the smallest useful solution first.
-- Follow the approved system architecture.
-- Avoid unnecessary agents and automation.
-- Prefer Codex-native capabilities.
-- Keep reusable instructions separate from project-specific instructions.
-- Use deterministic scripts for deterministic checks.
-- Keep approval gates explicit.
-- Validate each milestone before proceeding.
-- Avoid implementing future capabilities during the MVP.
+Execution rules:
+- Implement one task at a time.
+- Verify each deliverable with automated tests or deterministic checks before marking complete.
+- Keep reusable logic project-agnostic.
+- Enforce developer approval gates at each milestone transition.
 
 ---
 
 # 2. Milestone Overview
 
-| ID | Milestone | Priority | Expected outcome |
-|---|---|---|---|
-| M0 | Repository Foundation | Must Have | Establish the Dev-Team repository |
-| M1 | Core Instructions & Configuration | Must Have | Establish system operating rules |
-| M1.5 | Project Initialization & Repository Onboarding | Must Have | Foundational repository onboarding skill, templates & context |
-| M2 | Product Engineering Workflow | Must Have | Requirements creation and validation |
-| M3 | Project Discovery & Architecture | Must Have | Project-aware feature design |
-| M4 | Technical Planning Workflow | Must Have | Structured implementation planning |
-| M5 | Controlled Development Workflow | Must Have | One-task-at-a-time implementation |
-| M6 | QA & Feature Validation | Must Have | Independent implementation verification |
-| M7 | Bug Management & Status | Must Have | Bug fixing and progress reporting |
-| M8 | Installation & Documentation | Must Have | Reusable cross-project installation |
-| M9 | Pilot & System Validation | Must Have | Validate Dev-Team on real projects |
-
-Milestones must be completed sequentially unless a task is explicitly identified as independent.
+| Milestone | Title | Focus & Primary Deliverable |
+|---|---|---|
+| **M1** | Core Foundation | Canonical repository tree, Agent Skills standard, templates suite, schemas, and policies. |
+| **M2** | CLI Foundation | Dedicated `dev-team` CLI, workspace detection, global installation (`~/.dev-team/`), doctor. |
+| **M3** | Hybrid Distribution | Project initialization (`dev-team init`), `.dev-team/` configuration, skill projections, updates. |
+| **M4** | Project Initializer | AI onboarding skill (`project-initializer`), multi-stack classification, context generation. |
+| **M5** | Codex Integration | Reference platform adapter (`adapters/codex/`), discovery paths, operating instructions. |
+| **M6** | Engineering Workflows | Complete lifecycle workflows: requirements, design, planning, development, QA, and bug fixing. |
+| **M7** | Additional Platform Adapters | Adapters for Claude Code, Cursor, Copilot, and Gemini / Antigravity. |
+| **M8** | Pilot & System Validation | End-to-end pilot on Gotilo, cross-project verification, and workflow refinement. |
 
 ---
 
-# 3. Milestone 0 — Repository Foundation
+# 3. Milestone 1 — Core Foundation
 
-**Objective:** Establish the repository and its initial organizational structure.
+**Objective:** Establish the canonical repository layout, core schemas, configuration standards, and template suites.
 
-**Dependencies:** None.
+## Task M1-T01 — Canonical Repository Organization
+- **Scope:** Establish the directory structure conforming to v1.1 architecture: `cli/`, `skills/`, `agents/`, `workflows/`, `templates/`, `adapters/`, `schemas/`, `config/`, and `docs/`.
+- **Deliverables:** Directory tree with initial `.gitkeep` placeholders and root documentation links.
+- **Validation:** Filesystem inspection script verifying all required directories exist.
 
-## Task M0-T01 — Initialize repository
+## Task M1-T02 — Agent Skills Standard & Canonical Skill Directory Layout
+- **Scope:** Define the Agent Skills standard (`SKILL.md` with YAML frontmatter) and establish canonical skill folders in `skills/`.
+- **Deliverables:** Skill specification standard document and template `SKILL.md` format.
+- **Validation:** Schema validation verifying valid YAML frontmatter across all skill definitions.
 
-**Scope:**
-- Initialize the `dev-team` Git repository.
-- Establish the default branch.
-- Create the initial README.
-- Add an appropriate license if selected.
-- Add a basic `.gitignore`.
+## Task M1-T03 — Standardized Templates Suite
+- **Scope:** Create standard templates in `templates/` for feature deliverables (`requirement.md`, `system-design.md`, `plan.md`, `task.md`, `qa-report.md`, `bug-report.md`) and project scaffolding in `templates/project/` (`AGENTS.md`, `rules.md`, `DESIGN.md`, `overview.md`, `requirements.md`, `system-design.md`, `plan.md`, `tech-stack.md`, `architecture.md`).
+- **Deliverables:** Comprehensive markdown templates in `templates/` and `templates/project/`.
+- **Validation:** Markdown linting and template variable validation checks.
 
-**Expected files:**
+## Task M1-T04 — JSON Schemas for Declarative Contracts
+- **Scope:** Create declarative schemas in `schemas/`:
+  - `project-config.schema.json` (Validates `.dev-team/config.yaml`)
+  - `adapter-manifest.schema.json` (Validates platform adapter manifests)
+  - `installation-manifest.schema.json` (Validates installed artifact tracking)
+- **Deliverables:** Valid JSON Schema Draft 7/2020-12 definition files in `schemas/`.
+- **Validation:** Validate sample configurations against the JSON schemas.
 
-```text
-dev-team/
-├── README.md
-├── .gitignore
-└── LICENSE
-```
-
-**Acceptance criteria:**
-- Repository is initialized successfully.
-- Repository name is `dev-team`.
-- README explains the product purpose.
-- Git ignores temporary and environment-specific files.
-- No credentials or secrets are committed.
-
-**Validation:**
-- Run `git status`.
-- Verify repository structure.
-- Verify ignored files.
-
-## Task M0-T02 — Establish directory structure
-
-**Scope:**
-
-Create the approved initial directory organization.
-
-```text
-dev-team/
-├── config/
-├── agents/
-├── skills/
-├── workflows/
-├── templates/
-├── scripts/
-└── docs/
-```
-
-**Acceptance criteria:**
-- All required directories exist.
-- Directory responsibilities are documented.
-- No unnecessary placeholder files are introduced.
-
-**Validation:**
-- Inspect directory tree.
-- Verify structure against `system-design.md`.
-
-**Milestone completion criteria:**
-
-The repository is initialized and ready for the system instructions and reusable components.
+## Task M1-T05 — Framework Policies & Quality Gates Configuration
+- **Scope:** Define system-wide declarative policies in `config/`:
+  - `workflow.yaml`: Workflow registry, entry points, and governing roles.
+  - `quality-gates.yaml`: Mandatory checks for each lifecycle gate (`SAFE-001` to `SAFE-012`).
+  - `defaults.yaml`: Standard paths, artifact statuses, and task lifecycle states.
+- **Deliverables:** Valid YAML configuration files in `config/`.
+- **Validation:** Parse and validate configuration syntax and integrity.
 
 ---
 
-# 4. Milestone 1 — Core Instructions & Configuration
+# 4. Milestone 2 — CLI Foundation
 
-**Objective:** Establish the operating rules that govern every Dev-Team workflow.
+**Objective:** Build the core `dev-team` CLI for workspace detection, global asset installation, and diagnostics.
 
-**Dependencies:** M0.
+## Task M2-T01 — CLI Architecture & Project Setup
+- **Scope:** Initialize the CLI package under `cli/` with entry point `dev-team`, argument parsing, and command routing.
+- **Deliverables:** Working CLI package structure with modular command handlers (`cli/src/commands/`).
+- **Validation:** CLI displays help text, version number, and command list (`dev-team --help`, `dev-team --version`).
 
-## Task M1-T01 — Create root AGENTS.md
+## Task M2-T02 — Repository & Workspace Detection
+- **Scope:** Implement workspace detection engine in `cli/src/detection/` capable of identifying Git repository roots, workspace types, and existing configuration.
+- **Deliverables:** Detection module with unit tests for various repository structures.
+- **Validation:** Execute detection unit tests on empty folders, Git repos, and nested directories.
 
-**Scope:**
+## Task M2-T03 — Global Skill Installation Command
+- **Scope:** Implement `dev-team install --global` to copy canonical skills, templates, and adapters from the source repo into the user's home directory (`~/.dev-team/`).
+- **Deliverables:** Global installation command handler with platform selection flags.
+- **Validation:** Run `dev-team install --global` and verify `~/.dev-team/skills/`, `templates/`, and `version` are created.
 
-Define the primary instructions for Codex when working inside the Dev-Team repository.
+## Task M2-T04 — Installation Manifest & Provenance Engine
+- **Scope:** Implement manifest tracking in `cli/src/core/` recording artifact paths, types, SHA-256 source hashes, and installation timestamps.
+- **Deliverables:** Manifest generation and verification engine.
+- **Validation:** Verify manifest is correctly written to `~/.dev-team/manifest.json` and hashes match source files.
 
-The document must cover:
-
-- Dev-Team purpose and architecture.
-- Repository organization.
-- Engineering principles.
-- Workflow execution expectations.
-- Skill discovery and usage.
-- Task execution rules.
-- Approval requirements.
-- Safety boundaries.
-- Documentation conventions.
-
-**Acceptance criteria:**
-- Instructions are clear and concise.
-- No project-specific Gotilo assumptions are introduced.
-- Instructions distinguish reusable system behavior from application-specific behavior.
-- Codex can discover and follow the instructions.
-- The document does not duplicate entire skill definitions.
-
-**Validation:**
-- Review instruction completeness.
-- Check references to existing directories and files.
-- Verify consistency with the approved system design.
-
-## Task M1-T02 — Define workflow configuration
-
-**Scope:**
-
-Create `config/workflow.yaml`.
-
-Define:
-
-- Default workflow settings.
-- Approval requirements.
-- Task execution limits.
-- Enabled workflow definitions.
-- Workflow defaults.
-
-**Acceptance criteria:**
-- Configuration follows valid YAML syntax.
-- Defaults reflect the approved architecture.
-- One-task-at-a-time execution is the default.
-- No unnecessary configuration options are introduced.
-
-**Validation:**
-- Parse YAML.
-- Verify configuration values against system requirements.
-
-## Task M1-T03 — Define quality-gate configuration
-
-**Scope:**
-
-Create `config/quality-gates.yaml`.
-
-Define quality requirements for:
-
-- Requirements.
-- Architecture.
-- Planning.
-- Implementation.
-- Testing.
-- Code review.
-- Final acceptance.
-
-**Acceptance criteria:**
-- Mandatory quality gates are represented.
-- Approval requirements are consistent with `AGENTS.md`.
-- Verification requirements are clearly defined.
-
-**Validation:**
-- Parse YAML.
-- Cross-check against approved safety requirements.
-
-## Task M1-T04 — Define default system configuration
-
-**Scope:**
-
-Create `config/defaults.yaml`.
-
-Define only the genuinely reusable defaults required by the system.
-
-**Acceptance criteria:**
-- Configuration contains no application-specific values.
-- Defaults do not override project-specific instructions.
-- Duplicate configuration is avoided.
-
-**Validation:**
-- YAML parsing.
-- Configuration consistency review.
-
-**Milestone completion criteria:**
-
-Codex has a clear operating instruction set and a consistent configuration foundation.
+## Task M2-T05 — Installation Diagnostics (`dev-team doctor`)
+- **Scope:** Implement `dev-team doctor` command to inspect global installation, check filesystem permissions, verify Python/Git versions, and report platform readiness.
+- **Deliverables:** Diagnostic command handler and tabular reporting.
+- **Validation:** Run `dev-team doctor` in healthy and incomplete environments; observe accurate diagnostic output.
 
 ---
 
-# 4.5 Milestone 1.5 — Project Initialization & Repository Onboarding
+# 5. Milestone 3 — Hybrid Distribution
 
-**Objective:** Implement the foundational onboarding capability to introduce Dev-Team to any existing or new repository, analyze project state, gather missing context without speculative invention, and establish standardized root instructions, project documentation, and persistent context.
+**Objective:** Implement project-level initialization, configuration management, local custom skills, and non-destructive updates.
 
-**Dependencies:** M0, M1.
+## Task M3-T01 — Project Initialization Command (`dev-team init`)
+- **Scope:** Implement `dev-team init` command to bootstrap target repositories deterministically without modifying source code.
+- **Deliverables:** Project initialization command handler in `cli/src/commands/init.py`.
+- **Validation:** Run `dev-team init` in a fresh test repository; verify `.dev-team/` is created cleanly.
 
-## Task M1.5-T01 — Create target project templates suite
+## Task M3-T02 — Project Configuration Scaffolding (`.dev-team/config.yaml`)
+- **Scope:** Scaffold `.dev-team/config.yaml` based on detected project properties and `schemas/project-config.schema.json`.
+- **Deliverables:** Project configuration generator and schema validator.
+- **Validation:** Verify created `config.yaml` adheres strictly to `project-config.schema.json`.
 
-**Scope:**
+## Task M3-T03 — Skill Projection Engine
+- **Scope:** Implement skill projection in `cli/src/installation/` capable of exposing global skills to platform discovery paths (`.agents/skills/` or user-level paths) using symlinks, NTFS junctions on Windows, or safe-copy fallback.
+- **Deliverables:** Multi-strategy projection engine with automatic privilege fallback.
+- **Validation:** Test projection on Windows with and without admin privileges; verify fallback mechanism.
 
-Create standardized, modular templates under `templates/project/` for bootstrapping target repositories:
+## Task M3-T04 — Local Custom Skills Support & Resolution Engine
+- **Scope:** Implement support for project-local skills under `.dev-team/skills/` and implement the 3-tier resolution hierarchy (Local -> Global -> Platform).
+- **Deliverables:** Skill resolver module and CLI command `dev-team list --skills`.
+- **Validation:** Verify local skill overrides take precedence over global skills with identical names.
 
-1. **Root Instructions:**
-   - `templates/project/AGENTS.md`: Base AI agent instruction entry point.
-   - `templates/project/rules.md`: Project-specific coding standards and development constraints.
-   - `templates/project/DESIGN.md`: UI/UX design tokens and visual guidelines (marked optional for backend projects).
-2. **Project Documentation:**
-   - `templates/project/overview.md`: Vision, problem domain, and target users.
-   - `templates/project/requirements.md`: System-level requirements baseline.
-   - `templates/project/system-design.md`: Architecture overview and subsystem design.
-   - `templates/project/plan.md`: Roadmap, milestones, and release phases.
-   - `templates/project/tech-stack.md`: Languages, frameworks, dependencies, and infrastructure.
-   - `templates/project/architecture.md`: Source code layout, modules, and conventions.
+## Task M3-T05 — Non-Destructive Update Engine (`dev-team update`)
+- **Scope:** Implement `dev-team update` command that compares installed files against canonical source hashes and upgrades unmodified assets while preserving local customizations.
+- **Deliverables:** Safe update command with `--check` dry-run mode.
+- **Validation:** Simulate user edits in an installed skill, execute `dev-team update`, and confirm local edits are preserved.
 
-**Expected files:**
-
-```text
-templates/project/
-├── AGENTS.md
-├── rules.md
-├── DESIGN.md
-├── overview.md
-├── requirements.md
-├── system-design.md
-├── plan.md
-├── tech-stack.md
-└── architecture.md
-```
-
-**Acceptance criteria:**
-- Templates provide clear section structures, placeholder instructions, and non-prescriptive guidance.
-- Root instructions cleanly separate agent operational rules (`AGENTS.md`) from coding conventions (`rules.md`) to avoid duplication.
-- Documentation templates follow standard status conventions (`DRAFT`, `IN_REVIEW`, `APPROVED`).
-
-**Validation:**
-- Inspect template syntax and completeness.
-- Verify placeholder clarity.
-
-## Task M1.5-T02 — Define target configuration and central context schemas
-
-**Scope:**
-
-Define schemas and specifications for the target repository's `.dev-team/` directory:
-
-1. `config.yaml` schema: Declares project type, detected stack (frontend, backend, language, state management, routing, DI), active workflows, and documentation paths.
-2. `project-context.md` specification: Establishes the canonical central context store consumed across all Dev-Team skills, partitioning facts into confirmed truths versus active assumptions.
-3. `initialization-report.md` template: Audit report summarizing detected manifests, generated files, skipped documents, and unresolved items.
-
-**Expected deliverables:**
-- Documented specification in `docs/architecture.md` (or relevant doc) and reference templates.
-
-**Acceptance criteria:**
-- Schema covers diverse project types (Flutter, Node.js, Python, Java, Monorepo, Library, CLI).
-- Central context format enables downstream skills to read concise project reality without re-scanning code.
-- Report template captures complete initialization audit history.
-
-**Validation:**
-- Validate YAML schema consistency.
-- Verify central context sections.
-
-## Task M1.5-T03 — Implement Project Initializer procedural skill
-
-**Scope:**
-
-Create `skills/project-initializer/SKILL.md`.
-
-Define the end-to-end 6-phase onboarding procedure:
-1. Repository discovery (file listings, git status, manifests, dependencies).
-2. Project classification (Existing Project vs Empty Project vs Partially Initialized).
-3. Context gathering (code/manifest extraction for existing projects; structured adaptive interview for empty projects).
-4. Context validation (present understanding, highlight assumptions, confirm decisions).
-5. Documentation generation (instantiate templates from `templates/project/`, preserve existing files).
-6. Initialization verification (cross-document consistency check, generate audit report).
-
-Define strict safety and operating boundaries:
-- **Idempotency:** Re-running does not corrupt or duplicate existing work.
-- **Truth Preservation:** *Never invent speculative architecture for empty repositories.*
-- **Non-implementation boundary:** Scope ends upon context & doc establishment; does not generate feature code.
-- **User Approval:** Explicit developer signoff required before creating or modifying files.
-
-**Expected file:**
-`skills/project-initializer/SKILL.md`
-
-**Acceptance criteria:**
-- Skill follows Codex CLI skill format with clear activation description.
-- Distinct procedural paths for Scenario A (Existing) and Scenario B (Empty).
-- Explicit error handling and confirmation gates.
-
-**Validation:**
-- Review skill against Codex guidelines.
-- Verify phase completeness and safety constraints.
-
-## Task M1.5-T04 — Create Project Initializer reference guides
-
-**Scope:**
-
-Create detailed supporting reference guides in `skills/project-initializer/references/`:
-1. `project-detection.md`: Heuristics and manifest parsing rules for Flutter (`pubspec.yaml`), Node.js/TypeScript (`package.json`), Python (`pyproject.toml`, `requirements.txt`), Rust (`Cargo.toml`), Go (`go.mod`), Java/Kotlin (`build.gradle`).
-2. `context-gathering.md`: Adaptive interview question sequences for empty repositories, techniques for extracting intent from rough ideas, and rules for avoiding speculative architecture.
-3. `documentation-rules.md`: Mapping guidelines determining which files to generate based on project type (e.g. omitting `DESIGN.md` for backend-only).
-4. `initialization-workflow.md`: Phase-by-phase execution checklist and resume instructions for interrupted runs.
-
-**Expected files:**
-```text
-skills/project-initializer/references/
-├── project-detection.md
-├── context-gathering.md
-├── documentation-rules.md
-└── initialization-workflow.md
-```
-
-**Acceptance criteria:**
-- References provide actionable, concrete guidance without cluttering `SKILL.md`.
-- Multi-stack heuristics cover at least 6 common ecosystems.
-- Adaptive questionnaire avoids redundant questions when manifests exist.
-
-**Validation:**
-- Review reference accuracy and modularity.
-
-## Task M1.5-T05 — Implement project structure and manifest verification script
-
-**Scope:**
-
-Create `skills/project-initializer/scripts/check-project-structure.py`:
-- Deterministically inspects target directory trees.
-- Detects existing manifests (`pubspec.yaml`, `package.json`, `pyproject.toml`, etc.).
-- Identifies existing root instruction files (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`).
-- Detects source directory patterns (`lib/`, `src/`, `app/`, `packages/`).
-- Outputs structured JSON reporting project classification (Existing, Empty, or Partial) and detected tech stack.
-
-**Expected file:**
-`skills/project-initializer/scripts/check-project-structure.py`
-
-**Acceptance criteria:**
-- Script runs with zero third-party dependencies using standard Python library.
-- Correctly classifies empty directories vs existing codebases.
-- Returns clean exit codes (0 for success) and structured JSON stdout.
-
-**Validation:**
-- Execute test runs on empty temporary directory and existing project directory.
-- Verify JSON schema output.
-
-## Task M1.5-T06 — Implement Project Initialization workflow SOP
-
-**Scope:**
-
-Create `workflows/initialize-project.md`:
-- Defines step-by-step Standard Operating Procedure (SOP) for repository onboarding.
-- Integrates `project-initializer` skill, `check-project-structure.py` script, and templates suite.
-- Defines approval checkpoints before file creation.
-- Documents handover to downstream workflows (`workflows/new-feature.md`).
-
-**Expected file:**
-`workflows/initialize-project.md`
-
-**Acceptance criteria:**
-- SOP is clear, numbered, and includes explicit entry/exit conditions.
-- Documents developer commands (`/project-initializer`).
-- Aligns with `config/quality-gates.yaml` and `config/workflow.yaml`.
-
-**Validation:**
-- Review workflow logic against system design.
-
-## Task M1.5-T07 — Update workspace validation and integration checks
-
-**Scope:**
-
-Update `scripts/validate-workspace.py`:
-- Validate presence and integrity of `skills/project-initializer/SKILL.md` and reference guides.
-- Validate presence of `skills/project-initializer/scripts/check-project-structure.py`.
-- Validate presence of all templates in `templates/project/`.
-- Validate `workflows/initialize-project.md`.
-
-**Acceptance criteria:**
-- `validate-workspace.py` runs and verifies all new M1.5 components.
-- Zero failures or regressions in existing checks.
-
-**Validation:**
-- Run `python scripts/validate-workspace.py` and observe output.
-
-**Milestone completion criteria:**
-
-Dev-Team can successfully onboard any repository, classify its state, conduct structured onboarding dialogues without hallucinating architecture, establish persistent context in `.dev-team/project-context.md`, and generate standardized root instructions and project documentation.
+## Task M3-T06 — Safe Removal Command (`dev-team uninstall`)
+- **Scope:** Implement `dev-team uninstall` to cleanly remove managed artifacts recorded in `installation-manifest.json` without touching unrelated repository files.
+- **Deliverables:** Uninstall command handler with confirmation prompts and `--purge` flag.
+- **Validation:** Verify uninstallation leaves application code and unmanaged files intact.
 
 ---
 
-# 5. Milestone 2 — Product Engineering Workflow
+# 6. Milestone 4 — Project Initializer Skill
 
-**Objective:** Implement the first complete engineering workflow: converting an idea into approved, validated requirements.
+**Objective:** Build the foundational AI onboarding skill that discovers repository context, conducts adaptive interviews, and scaffolds documentation.
 
-**Dependencies:** M1.
+## Task M4-T01 — Project Initializer Skill Specification
+- **Scope:** Create `skills/project-initializer/SKILL.md` defining triggers, activation rules, and onboarding procedures conforming to the Agent Skills standard.
+- **Deliverables:** Canonical `SKILL.md` with complete reference documentation.
+- **Validation:** Validate skill metadata and frontmatter parsing.
 
-## Task M2-T01 — Define Product Analyst role
+## Task M4-T02 — Multi-Stack Inspection & Classification Engine
+- **Scope:** Implement detection scripts and procedures in `skills/project-initializer/` to classify repositories as `EXISTING`, `EMPTY`, or `PARTIAL`, extracting tech stacks (Flutter, Node, Python, Java, etc.) without guessing.
+- **Deliverables:** Structural analysis script (`scripts/check-project-structure.py`) and reference guides.
+- **Validation:** Run structural inspection across sample repositories (empty, Flutter, Node.js).
 
-**Scope:**
+## Task M4-T03 — Adaptive Onboarding Interview Protocol
+- **Scope:** Define the structured, adaptive interview process for empty or partially initialized repositories, ensuring no speculative architecture is invented.
+- **Deliverables:** Interview protocol reference documentation (`references/context-gathering.md`).
+- **Validation:** Verify questions adapt to confirmed facts and skip already-known properties.
 
-Create `agents/product-analyst.toml`.
+## Task M4-T04 — Context Validation & Developer Confirmation Gate
+- **Scope:** Implement validation procedures presenting discovered facts, active assumptions, and open questions to the developer for explicit approval before file creation.
+- **Deliverables:** Confirmation gate procedure enforcing `SAFE-001`, `SAFE-002`, and `SAFE-012`.
+- **Validation:** Simulate approval workflow; verify execution halts if developer rejects proposed context.
 
-Define:
+## Task M4-T05 — Project Documentation Generator
+- **Scope:** Implement template instantiation generating `AGENTS.md`, `rules.md`, `DESIGN.md` (if applicable), and baseline project documentation in `docs/project/`.
+- **Deliverables:** Scaffolding generation logic with conflict detection for existing files.
+- **Validation:** Verify generated files maintain cross-document consistency and do not overwrite existing files without signoff.
 
-- Agent purpose.
-- Responsibilities.
-- Expected inputs.
-- Expected outputs.
-- Skill usage.
-- Scope boundaries.
-
-**Acceptance criteria:**
-- Agent responsibilities are clearly defined.
-- Requirements creation is its primary responsibility.
-- It cannot independently approve requirements.
-- It distinguishes confirmed facts from assumptions.
-
-**Validation:**
-- Verify agent configuration against the installed Codex configuration format.
-- Review role boundaries.
-
-## Task M2-T02 — Create Product Requirements skill
-
-**Scope:**
-
-Create:
-
-`skills/product-requirements/SKILL.md`
-
-Define the reusable process for converting informal feature ideas into structured requirements.
-
-The skill should cover:
-
-- Problem identification.
-- User identification.
-- Goals and non-goals.
-- Functional requirements.
-- Non-functional requirements.
-- User scenarios.
-- Edge cases.
-- Acceptance criteria.
-- Constraints.
-- Assumptions and open questions.
-
-**Acceptance criteria:**
-- Skill follows the supported Codex skill structure.
-- Activation description clearly identifies when it should be used.
-- Instructions are reusable across projects.
-- Output follows the requirement template.
-
-**Validation:**
-- Verify skill structure and metadata.
-- Test using a sample feature idea.
-
-## Task M2-T03 — Create requirement template
-
-**Scope:**
-
-Create `templates/requirement.md`.
-
-The template should contain:
-
-- Document metadata.
-- Product overview.
-- Problem statement.
-- Goals.
-- Non-goals.
-- User roles.
-- Functional requirements.
-- Non-functional requirements.
-- Business rules.
-- User flows.
-- Edge cases.
-- Acceptance criteria.
-- Dependencies.
-- Assumptions.
-- Open questions.
-- Approval information.
-
-**Acceptance criteria:**
-- Requirements have stable identifiers.
-- Sections can be omitted when irrelevant.
-- The template does not force unnecessary documentation for small features.
-
-**Validation:**
-- Generate a sample requirement document.
-- Check completeness and usability.
-
-## Task M2-T04 — Define Product Reviewer role
-
-**Scope:**
-
-Create `agents/product-reviewer.toml`.
-
-Define independent requirement-review responsibilities.
-
-**Acceptance criteria:**
-- Reviewer evaluates requirements independently.
-- Findings include severity and recommended resolution.
-- Reviewer identifies missing and conflicting requirements.
-- Reviewer does not silently rewrite approved requirements.
-
-**Validation:**
-- Test against an intentionally incomplete sample requirement.
-
-## Task M2-T05 — Create Requirement Validation skill
-
-**Scope:**
-
-Create `skills/requirement-validation/SKILL.md`.
-
-Define the validation procedure for:
-
-- Clarity.
-- Completeness.
-- Consistency.
-- Feasibility.
-- Testability.
-- Security.
-- Missing user scenarios.
-- Error and empty states.
-
-**Acceptance criteria:**
-- Review findings are actionable.
-- Findings are classified by importance.
-- Validation outcome uses the approved review states.
-- Blocking questions are identified.
-
-**Validation:**
-- Test with incomplete, conflicting, and complete sample requirements.
-
-## Task M2-T06 — Implement requirements workflow
-
-**Scope:**
-
-Create:
-
-- `workflows/new-feature.md`
-- `workflows/validate-requirement.md`
-
-Define the complete idea-to-requirements process.
-
-**Acceptance criteria:**
-- Workflow invokes the appropriate skills.
-- Project context is inspected when applicable.
-- Requirement review occurs before approval.
-- Developer approval is mandatory.
-- Existing approved documents are not overwritten silently.
-
-**Validation:**
-- Execute the workflow using a sample feature.
-- Verify generated artifact.
-- Verify approval behavior.
-
-**Milestone completion criteria:**
-
-A developer can provide an informal feature idea and receive a structured, independently reviewed requirement document requiring explicit approval.
+## Task M4-T06 — Canonical Context Store & Initialization Audit Report
+- **Scope:** Generate `.dev-team/project-context.md` (partitioning `CONFIRMED_FACTS` vs `ACTIVE_ASSUMPTIONS`) and `.dev-team/initialization-report.md`.
+- **Deliverables:** Central context file generator and initialization audit reporting.
+- **Validation:** Inspect generated `project-context.md` and verify downstream skills can consume it directly.
 
 ---
 
-# 6. Milestone 3 — Project Discovery & Architecture
+# 7. Milestone 5 — OpenAI Codex Platform Adapter
 
-**Objective:** Enable Dev-Team to understand an existing application and produce architecture appropriate to its actual technology and conventions.
+**Objective:** Implement the initial reference platform adapter integrating Dev-Team with OpenAI Codex CLI.
 
-**Dependencies:** M2.
+## Task M5-T01 — Codex Adapter Manifest & Configuration
+- **Scope:** Create `adapters/codex/manifest.yaml` declaring capabilities, discovery paths (`~/.codex/skills/`, `.agents/skills/`), and root instruction integration (`AGENTS.md`).
+- **Deliverables:** Declarative manifest conforming to `schemas/adapter-manifest.schema.json`.
+- **Validation:** Manifest schema validation.
 
-## Task M3-T01 — Create project discovery skill
+## Task M5-T02 — Codex Skill Discovery Mapping
+- **Scope:** Implement discovery mapping linking canonical skills into Codex user-level and repository-level skill directories.
+- **Deliverables:** Adapter execution logic in `adapters/codex/adapter.py`.
+- **Validation:** Verify Codex CLI discovers skills via `codex skills list` or standard discovery.
 
-**Scope:**
+## Task M5-T03 — Operating Instructions Integration
+- **Scope:** Configure root `AGENTS.md` instructions tailored for Codex orchestration, defining role boundaries, workflow triggers, and approval gates.
+- **Deliverables:** Codex-optimized root operating instructions.
+- **Validation:** Verify Codex session adheres to operating boundaries in `AGENTS.md`.
 
-Create:
+## Task M5-T04 — Declarative Role Specifications Mapping
+- **Scope:** Map Dev-Team specialized roles (`agents/*.toml`) into Codex execution instructions.
+- **Deliverables:** Validated TOML role specifications in `agents/`.
+- **Validation:** Verify all 6 roles (Analyst, Reviewer, Architect, Planner, Developer, QA) have valid TOML specifications.
 
-`skills/project-discovery/SKILL.md`
-
-Define repository inspection procedures.
-
-Inspect relevant:
-
-- Project instructions.
-- Technology metadata.
-- Source structure.
-- Existing modules.
-- State management.
-- Routing.
-- Dependency injection.
-- Backend integrations.
-- Database migrations.
-- Tests.
-- Design system.
-
-**Acceptance criteria:**
-- Project discovery is technology-aware.
-- Existing conventions are identified.
-- Only relevant files are inspected.
-- Secrets are never exposed.
-- Unknown project details remain unknown until verified.
-
-**Validation:**
-- Test on an existing Flutter project.
-- Test on a project with a different architecture.
-
-## Task M3-T02 — Define System Architect role
-
-**Scope:**
-
-Create `agents/system-architect.toml`.
-
-Define responsibilities for:
-
-- Architecture analysis.
-- Design decisions.
-- Application layer responsibilities.
-- Data flow.
-- Database design.
-- Integration design.
-- Security considerations.
-
-**Acceptance criteria:**
-- Architect uses actual project context.
-- Architecture recommendations are justified.
-- Major decisions requiring approval are identified.
-
-**Validation:**
-- Review against project discovery output.
-
-## Task M3-T03 — Create System Design skill
-
-**Scope:**
-
-Create:
-
-`skills/system-design/SKILL.md`
-
-Define the reusable process for designing features.
-
-**Acceptance criteria:**
-- Skill follows approved requirements.
-- It considers relevant application layers.
-- It avoids unnecessary complexity.
-- It includes integration and security considerations.
-- It identifies approval-required decisions.
-
-**Validation:**
-- Generate a sample feature design.
-- Review requirement coverage.
-
-## Task M3-T04 — Create system design template
-
-**Scope:**
-
-Create `templates/system-design.md`.
-
-Include reusable sections for:
-
-- Introduction.
-- Architecture overview.
-- Component responsibilities.
-- Data flow.
-- Database changes.
-- API integrations.
-- UI and state management.
-- Security.
-- Error handling.
-- Testing.
-- Design decisions.
-- Risks.
-- Approval.
-
-**Acceptance criteria:**
-- Template is technology-neutral.
-- Irrelevant sections can be omitted.
-- Technical decisions are traceable to requirements.
-
-**Validation:**
-- Generate a sample design for a Flutter feature.
-- Verify template flexibility.
-
-## Task M3-T05 — Implement feature design workflow
-
-**Scope:**
-
-Create `workflows/design-feature.md`.
-
-**Acceptance criteria:**
-- Workflow reads approved requirements.
-- Project discovery runs before implementation design.
-- System Architect uses existing project patterns.
-- Design document is generated in the agreed documentation location.
-- Developer approval is requested for significant decisions.
-
-**Validation:**
-- Test using an existing application feature.
-- Compare design with actual project architecture.
-
-**Milestone completion criteria:**
-
-Dev-Team can inspect an existing application and design a feature without imposing an unrelated architecture or technology stack.
+## Task M5-T05 — End-to-End Codex Discovery & Execution Test
+- **Scope:** Test end-to-end skill discovery and workflow execution using OpenAI Codex CLI in a clean workspace.
+- **Deliverables:** Verification log demonstrating successful skill discovery and execution.
+- **Validation:** Run `/project-initializer` under Codex and observe successful execution.
 
 ---
 
-# 7. Milestone 4 — Technical Planning Workflow
+# 8. Milestone 6 — Engineering Workflows
 
-**Objective:** Convert approved requirements and designs into small, sequenced, independently verifiable implementation tasks.
+**Objective:** Implement the complete six-stage engineering lifecycle workflows, specialized skills, and approval gates.
 
-**Dependencies:** M3.
+## Task M6-T01 — Product Requirements Workflow (`new-feature`)
+- **Scope:** Implement `workflows/new-feature.md` and `skills/product-requirements/SKILL.md` (Product Analyst role).
+- **Deliverables:** Idea-to-requirements workflow and skill generating `.dev-team/features/<f>/requirement.md`.
+- **Validation:** Convert sample feature idea into structured requirement document.
 
-## Task M4-T01 — Define Technical Planner role
+## Task M6-T02 — Requirement Validation Workflow (`validate-requirement`)
+- **Scope:** Implement `workflows/validate-requirement.md` and `skills/requirement-validation/SKILL.md` (Product Reviewer role).
+- **Deliverables:** Adversarial audit workflow identifying ambiguities, omissions, and testability gaps.
+- **Validation:** Run audit on incomplete requirement; verify gaps are surfaced and `SAFE-001` gate is enforced.
 
-**Scope:**
+## Task M6-T03 — Feature Discovery & System Design Workflow (`design-feature`)
+- **Scope:** Implement `workflows/design-feature.md`, `skills/system-design/SKILL.md`, and `skills/project-discovery/SKILL.md` (System Architect role).
+- **Deliverables:** Architecture workflow generating `system-design.md` and schema/UX specs.
+- **Validation:** Generate technical design conforming to target repository patterns and enforce `SAFE-002`.
 
-Create `agents/technical-planner.toml`.
+## Task M6-T04 — Technical Planning Workflow (`create-plan`)
+- **Scope:** Implement `workflows/create-plan.md` and `skills/technical-planning/SKILL.md` (Technical Planner role).
+- **Deliverables:** Task decomposition workflow generating sequenced `plan.md` mapped to requirement IDs.
+- **Validation:** Generate task plan with acceptance criteria, validation steps, and enforce `SAFE-003`.
 
-Define responsibilities for:
+## Task M6-T05 — Controlled Implementation Workflow (`implement-next`)
+- **Scope:** Implement `workflows/implement-next.md` and `skills/flutter-development/SKILL.md` (Developer role).
+- **Deliverables:** Single-task implementation workflow with pre-task git check and automated verification.
+- **Validation:** Execute one task; observe code modifications, test execution, and evidence recording.
 
-- Task decomposition.
-- Dependency identification.
-- Milestone creation.
-- Implementation ordering.
-- Acceptance criteria.
-- Validation planning.
+## Task M6-T06 — Code Review & Feature Validation Workflow (`validate-feature`)
+- **Scope:** Implement `workflows/validate-feature.md`, `skills/code-review/SKILL.md`, and `skills/feature-validation/SKILL.md` (QA Engineer role).
+- **Deliverables:** Independent verification workflow generating `qa-report.md`.
+- **Validation:** Validate completed feature against requirement acceptance criteria; report pass/fail.
 
-**Acceptance criteria:**
-- Planner creates actionable tasks.
-- Tasks remain appropriately small.
-- Dependencies are explicit.
-- Each task maps to relevant requirement identifiers.
+## Task M6-T07 — Defect Diagnosis & Bug-Fixing Workflow (`fix-bug`)
+- **Scope:** Implement `workflows/fix-bug.md` and `skills/bug-fixing/SKILL.md`.
+- **Deliverables:** Controlled bug reproduction, minimal fix, and regression testing workflow.
+- **Validation:** Reproduce defect deterministically before applying fix and verify regression test passes.
 
-**Validation:**
-- Review a sample implementation plan.
-
-## Task M4-T02 — Create Technical Planning skill
-
-**Scope:**
-
-Create:
-
-`skills/technical-planning/SKILL.md`
-
-Define how approved designs become implementation plans.
-
-**Acceptance criteria:**
-- Tasks have clear objectives.
-- Expected files or modules are identified when known.
-- Dependencies are recorded.
-- Deliverables and validation steps are specified.
-- Parallelizable work is identified when appropriate.
-
-**Validation:**
-- Test on a medium-complexity feature.
-
-## Task M4-T03 — Create implementation plan template
-
-**Scope:**
-
-Create `templates/plan.md`.
-
-Include:
-
-- Document metadata.
-- Implementation overview.
-- Milestone overview.
-- Task definitions.
-- Dependencies.
-- Acceptance criteria.
-- Validation strategy.
-- Approval information.
-
-**Acceptance criteria:**
-- Every meaningful task has a unique identifier.
-- Tasks map to requirements.
-- Tasks can be tracked independently.
-- The template supports multiple milestones.
-
-**Validation:**
-- Generate a sample plan and inspect its task structure.
-
-## Task M4-T04 — Create task template
-
-**Scope:**
-
-Create `templates/task.md`.
-
-Define a reusable task format.
-
-Each task should contain:
-
-- Task ID.
-- Title.
-- Objective.
-- Requirements covered.
-- Dependencies.
-- Scope.
-- Expected files.
-- Deliverables.
-- Acceptance criteria.
-- Validation steps.
-- Status.
-
-**Acceptance criteria:**
-- Tasks are independently understandable.
-- Tasks can be executed without repeatedly interpreting the entire plan.
-- Validation expectations are explicit.
-
-**Validation:**
-- Generate sample tasks from a feature plan.
-
-## Task M4-T05 — Implement planning workflow
-
-**Scope:**
-
-Create `workflows/create-plan.md`.
-
-**Acceptance criteria:**
-- Approved requirements and design are used as inputs.
-- Tasks are properly sequenced.
-- Dependencies are validated.
-- Plan review is performed.
-- Developer approval is required before implementation.
-
-**Validation:**
-- Generate an implementation plan from a sample feature.
-- Verify task ordering and coverage.
-
-**Milestone completion criteria:**
-
-Dev-Team can produce an approved, actionable implementation plan that can guide controlled development.
+## Task M6-T08 — Feature Status Reporting (`feature-status`)
+- **Scope:** Implement `workflows/feature-status.md` for zero-hallucination progress auditing.
+- **Deliverables:** Status reporting procedure inspecting on-disk artifacts.
+- **Validation:** Verify status accurately reflects actual task states without optimistic fabrication.
 
 ---
 
-# 8. Milestone 5 — Controlled Development Workflow
+# 9. Milestone 7 — Additional Platform Adapters
 
-**Objective:** Implement approved tasks individually while following the target application's existing conventions.
+**Objective:** Implement modular platform adapters extending Dev-Team beyond Codex.
 
-**Dependencies:** M4.
+## Task M7-T01 — Claude Code Platform Adapter
+- **Scope:** Implement `adapters/claude-code/` manifest and discovery mapping for Anthropic Claude Code (`CLAUDE.md`, `~/.claude/skills/`).
+- **Deliverables:** Claude Code adapter manifest and integration script.
+- **Validation:** Verify skill discovery and instruction reading under Claude Code.
 
-## Task M5-T01 — Define Developer role
+## Task M7-T02 — Cursor Platform Adapter
+- **Scope:** Implement `adapters/cursor/` manifest and discovery mapping for Cursor IDE (`.cursorrules`, `.cursor/skills/`).
+- **Deliverables:** Cursor adapter manifest and integration script.
+- **Validation:** Verify Cursor rule loading and skill accessibility.
 
-**Scope:**
+## Task M7-T03 — GitHub Copilot Platform Adapter
+- **Scope:** Implement `adapters/copilot/` manifest and discovery mapping for GitHub Copilot (`.github/copilot-instructions.md`).
+- **Deliverables:** Copilot adapter manifest and integration script.
+- **Validation:** Verify instruction generation and skill linking.
 
-Create `agents/developer.toml`.
-
-Define responsibilities and implementation boundaries.
-
-**Acceptance criteria:**
-- Developer reads the approved task before editing.
-- Existing code conventions are respected.
-- Unrelated refactoring is avoided.
-- Scope expansion requires approval.
-- Relevant validation is performed.
-
-**Validation:**
-- Review against the approved implementation workflow.
-
-## Task M5-T02 — Create Flutter Development skill
-
-**Scope:**
-
-Create:
-
-`skills/flutter-development/SKILL.md`
-
-Define reusable Flutter/Dart engineering guidance.
-
-Cover:
-
-- Flutter project inspection.
-- Existing architecture conventions.
-- Dart coding practices.
-- Widget composition.
-- State management.
-- Routing.
-- Dependency injection.
-- Repository and data-layer patterns.
-- Error handling.
-- Testing.
-- Formatting and static analysis.
-
-**Acceptance criteria:**
-- Skill is reusable across Flutter repositories.
-- It does not force BLoC, Riverpod, Supabase, Firebase, or any particular library.
-- Project instructions take precedence over generic recommendations.
-
-**Validation:**
-- Test on projects using different state-management approaches.
-
-## Task M5-T03 — Implement next-task workflow
-
-**Scope:**
-
-Create:
-
-`workflows/implement-next.md`
-
-Define one-task-at-a-time execution.
-
-**Acceptance criteria:**
-- The workflow selects the next eligible task.
-- Dependencies are checked.
-- Git status is inspected.
-- Relevant source files are inspected.
-- Only approved scope is implemented.
-- Relevant checks are executed.
-- Task status is updated based on evidence.
-- Workflow stops after one task by default.
-
-**Validation:**
-- Execute one sample implementation task.
-- Verify changed files.
-- Verify task status.
-- Verify reported validation results.
-
-## Task M5-T04 — Implement task progress tracking
-
-**Scope:**
-
-Define a consistent task-status convention.
-
-Recommended statuses:
-
-- PENDING
-- IN_PROGRESS
-- BLOCKED
-- COMPLETED
-- NEEDS_REVIEW
-
-**Acceptance criteria:**
-- Status is stored in the relevant implementation artifact.
-- Task completion requires acceptance criteria to be addressed.
-- Blocked tasks explain the blocker.
-- Completed tasks include validation evidence.
-
-**Validation:**
-- Test status transitions.
-- Confirm completed tasks cannot be inferred from an agent's unsupported claim.
-
-**Milestone completion criteria:**
-
-Dev-Team can execute one approved task at a time, preserve unrelated changes, and report actual implementation results.
+## Task M7-T04 — Gemini / Antigravity Platform Adapter
+- **Scope:** Implement `adapters/gemini/` manifest and discovery mapping for Google Antigravity / Gemini CLI (`.gemini/antigravity/skills/`).
+- **Deliverables:** Gemini adapter manifest and integration script.
+- **Validation:** Verify skill registration and execution.
 
 ---
 
-# 9. Milestone 6 — QA & Feature Validation
-
-**Objective:** Independently verify implementations against approved requirements and engineering quality standards.
-
-**Dependencies:** M5.
-
-## Task M6-T01 — Define QA Engineer role
-
-**Scope:**
-
-Create `agents/qa-engineer.toml`.
-
-Define independent validation responsibilities.
-
-**Acceptance criteria:**
-- QA uses approved requirements and plans.
-- QA independently inspects changed code.
-- Findings include severity and evidence.
-- Unexecuted checks are not reported as passed.
-
-**Validation:**
-- Test against an implementation with intentional defects.
-
-## Task M6-T02 — Create Code Review skill
-
-**Scope:**
-
-Create:
-
-`skills/code-review/SKILL.md`
-
-Review areas:
-
-- Correctness.
-- Maintainability.
-- Security.
-- Performance.
-- Data integrity.
-- Error handling.
-- Regression risks.
-- Code conventions.
-
-**Acceptance criteria:**
-- Findings are actionable.
-- Severity is identified.
-- Affected files or components are referenced.
-- False positives are minimized.
-
-**Validation:**
-- Review sample implementations containing known defects.
-
-## Task M6-T03 — Create Feature Validation skill
-
-**Scope:**
-
-Create:
-
-`skills/feature-validation/SKILL.md`
-
-Define requirement-to-implementation validation.
-
-**Acceptance criteria:**
-- Every mandatory acceptance criterion is evaluated.
-- Tests and validation results are recorded.
-- Unmet criteria are identified.
-- Validation limitations are documented.
-
-**Validation:**
-- Compare a sample implementation against its requirements.
-
-## Task M6-T04 — Create QA report template
-
-**Scope:**
-
-Create `templates/qa-report.md`.
-
-Include:
-
-- Feature information.
-- Review summary.
-- Requirements coverage.
-- Findings.
-- Severity.
-- Evidence.
-- Tests executed.
-- Test outcomes.
-- Unverified areas.
-- Remaining issues.
-- Recommendation.
-
-**Acceptance criteria:**
-- Report distinguishes verified and unverified outcomes.
-- Findings are traceable to affected requirements and implementation tasks.
-
-**Validation:**
-- Generate a sample QA report.
-
-## Task M6-T05 — Implement feature validation workflow
-
-**Scope:**
-
-Create:
-
-`workflows/validate-feature.md`
-
-**Acceptance criteria:**
-- Independent QA is performed.
-- Relevant automated checks are executed.
-- Findings are reported with evidence.
-- Blocking defects prevent full completion.
-- Final acceptance remains with the developer.
-
-**Validation:**
-- Run against a completed sample feature.
-- Verify the workflow identifies intentionally introduced defects.
-
-**Milestone completion criteria:**
-
-Dev-Team can independently assess whether a feature meets its approved requirements and quality expectations.
-
----
-
-# 10. Milestone 7 — Bug Management & Feature Status
-
-**Objective:** Provide controlled defect management and reliable project progress reporting.
-
-**Dependencies:** M6.
-
-## Task M7-T01 — Create Bug Fixing skill
-
-**Scope:**
-
-Create:
-
-`skills/bug-fixing/SKILL.md`
-
-Define the bug lifecycle:
-
-- Defect capture.
-- Reproduction.
-- Root-cause analysis.
-- Impact assessment.
-- Fix planning.
-- Implementation.
-- Regression testing.
-- Validation.
-
-**Acceptance criteria:**
-- Root causes are distinguished from symptoms.
-- Unverified hypotheses are labeled.
-- Minimal fixes are preferred.
-- Regression tests are considered.
-
-**Validation:**
-- Test against a reproducible sample defect.
-
-## Task M7-T02 — Create Bug Report template
-
-**Scope:**
-
-Create `templates/bug-report.md`.
-
-Include:
-
-- Bug identifier.
-- Title.
-- Environment.
-- Expected behavior.
-- Actual behavior.
-- Reproduction steps.
-- Severity.
-- Evidence.
-- Root cause.
-- Proposed fix.
-- Regression coverage.
-- Validation result.
-
-**Acceptance criteria:**
-- A developer can report a defect without unnecessary information.
-- Unknown details remain optional.
-- The document supports bug lifecycle tracking.
-
-**Validation:**
-- Create a sample bug report.
-
-## Task M7-T03 — Implement bug-fixing workflow
-
-**Scope:**
-
-Create `workflows/fix-bug.md`.
-
-**Acceptance criteria:**
-- Workflow attempts reproduction before modification.
-- Root cause is investigated.
-- Risky fixes require approval.
-- Regression tests are added where practical.
-- Fixes are independently validated.
-
-**Validation:**
-- Execute against a sample defect.
-- Verify regression coverage.
-
-## Task M7-T04 — Implement feature status workflow
-
-**Scope:**
-
-Create `workflows/feature-status.md`.
-
-**Acceptance criteria:**
-- Workflow reads actual feature documentation.
-- Completed and pending tasks are accurately identified.
-- Approval states are reported.
-- Blockers and open decisions are visible.
-- No progress is invented.
-
-**Validation:**
-- Test against features in different workflow stages.
-
-**Milestone completion criteria:**
-
-Dev-Team supports both controlled bug fixing and reliable feature-progress reporting.
-
----
-
-# 11. Milestone 8 — Installation & Documentation
-
-**Objective:** Make Dev-Team reusable across multiple independent application repositories.
-
-**Dependencies:** M7.
-
-## Task M8-T01 — Document installation architecture
-
-**Scope:**
-
-Create `docs/installation.md`.
-
-Document:
-
-- Prerequisites.
-- Supported Codex environment.
-- Skill installation.
-- Shared installation strategy.
-- Symbolic-link strategy.
-- Target repository configuration.
-- Troubleshooting.
-- Uninstallation.
-
-**Acceptance criteria:**
-- Instructions are understandable.
-- No hardcoded developer-specific absolute paths are required.
-- Supported Codex mechanisms are verified against the installed version.
-
-**Validation:**
-- Follow installation instructions in a clean test environment.
-
-## Task M8-T02 — Implement Windows installer
-
-**Scope:**
-
-Create `scripts/install.ps1`.
-
-Responsibilities:
-
-- Detect the Dev-Team root.
-- Locate the appropriate Codex skill directory.
-- Validate installation prerequisites.
-- Install or link reusable skills.
-- Avoid overwriting existing configuration.
-- Report installation results.
-
-**Acceptance criteria:**
-- Installer works on the developer's Windows environment.
-- Existing unrelated skills remain untouched.
-- Repeated execution does not create duplicate installations.
-- Errors are reported clearly.
-
-**Validation:**
-- Fresh installation.
-- Repeated installation.
-- Existing-directory handling.
-- Invalid-path handling.
-
-## Task M8-T03 — Implement Unix-like installer
-
-**Scope:**
-
-Create `scripts/install.sh`.
-
-**Acceptance criteria:**
-- Provides equivalent core installation behavior.
-- Uses portable shell practices where practical.
-- Preserves existing user configuration.
-
-**Validation:**
-- Execute in a compatible Unix-like environment when available.
-- Verify installed skill paths.
-
-## Task M8-T04 — Create workspace validation script
-
-**Scope:**
-
-Create `scripts/validate-workspace.py`.
-
-Responsibilities:
-
-- Validate expected directory structure.
-- Check required configuration files.
-- Validate YAML syntax.
-- Check required skill metadata.
-- Identify missing referenced templates or workflows.
-
-**Acceptance criteria:**
-- Script performs deterministic checks.
-- Errors identify affected files.
-- Does not modify project files.
-- Returns a meaningful exit code.
-
-**Validation:**
-- Test against a valid workspace.
-- Test against deliberately broken configurations.
-- Verify exit codes.
-
-## Task M8-T05 — Complete system documentation
-
-**Scope:**
-
-Create or update:
-
-- `README.md`
-- `docs/architecture.md`
-- `docs/workflows.md`
-- `docs/contribution-guide.md`
-
-**Acceptance criteria:**
-- Installation is documented.
-- Workflow entry points are documented.
-- Architecture is consistent with implementation.
-- Contribution instructions explain how to add skills and agents.
-- Unsupported capabilities are not advertised.
-
-**Validation:**
-- Follow documentation from a clean checkout.
-- Cross-check documentation against actual files.
-
-**Milestone completion criteria:**
-
-Dev-Team can be installed and used from a separate application repository without copying the entire framework into it.
-
----
-
-# 12. Milestone 9 — Pilot & System Validation
-
-**Objective:** Verify the complete Dev-Team workflow using real development projects.
-
-**Dependencies:** M8.
-
-## Task M9-T01 — Pilot on Gotilo
-
-**Scope:**
-
-Use Dev-Team to implement one real Gotilo feature.
-
-The pilot should cover:
-
-- Feature requirements.
-- Requirement review.
-- Project discovery.
-- System design.
-- Implementation planning.
-- Task execution.
-- QA.
-- Final acceptance.
-
-The Property Rating & Review feature is a suitable candidate.
-
-**Acceptance criteria:**
-- The complete workflow can be executed.
-- Gotilo-specific information stays within Gotilo.
-- Existing architecture is respected.
-- Approval gates are respected.
-- Implementation and QA results are recorded.
-
-**Validation:**
-- Review the complete artifact chain.
-- Identify workflow failures and unnecessary steps.
-
-## Task M9-T02 — Validate cross-project portability
-
-**Scope:**
-
-Install and test Dev-Team in a second independent Flutter repository with a different project configuration.
-
-**Acceptance criteria:**
-- Installation succeeds.
-- Project discovery identifies the second project's actual architecture.
-- No Gotilo-specific assumptions appear.
-- Requirements, design, planning, and development workflows remain usable.
-
-**Validation:**
-- Execute representative workflows.
-- Compare generated artifacts.
-
-## Task M9-T03 — Evaluate workflow quality
-
-**Scope:**
-
-Review the entire implementation based on actual pilot results.
-
-Evaluate:
-
-- Workflow clarity.
-- Agent responsibilities.
-- Skill usefulness.
-- Context efficiency.
-- Approval behavior.
-- Task size.
-- Validation quality.
-- Installation reliability.
-
-**Acceptance criteria:**
-- Problems are documented with evidence.
-- Unnecessary complexity is identified.
-- Required corrections are prioritized.
-- Improvements do not silently expand MVP scope.
-
-**Validation:**
-- Produce a concise system evaluation report.
-
-## Task M9-T04 — MVP readiness review
-
-**Scope:**
-
-Perform a final review against the approved product requirements.
-
-**Acceptance criteria:**
-- All mandatory MVP acceptance criteria are evaluated.
-- Outstanding defects and limitations are documented.
-- Documentation matches the actual implementation.
-- Developer makes the final MVP acceptance decision.
-
-**Validation:**
-- Complete requirement traceability review.
-- Run available workspace validation.
-- Verify both pilot environments.
-
-**Milestone completion criteria:**
-
-Dev-Team demonstrates reliable operation across at least two independent Flutter repositories.
-
----
-
-# 13. Task Dependencies
-
-The primary execution dependency is:
-
-```mermaid
-flowchart TD
-    M0[M0: Repository Foundation]
-    M1[M1: Core Instructions]
-    M1_5[M1.5: Project Initializer & Onboarding]
-    M2[M2: Product Engineering]
-    M3[M3: Project Discovery and Design]
-    M4[M4: Technical Planning]
-    M5[M5: Controlled Development]
-    M6[M6: QA and Validation]
-    M7[M7: Bug Management]
-    M8[M8: Installation and Documentation]
-    M9[M9: Pilot and Validation]
-
-    M0 --> M1 --> M1_5 --> M2 --> M3 --> M4
-    M4 --> M5 --> M6 --> M7 --> M8 --> M9
-```
-
-Some documentation and template tasks may be performed independently within their respective milestones, but milestone completion should respect the required dependencies.
-
----
-
-# 14. Requirement Traceability
-
-The following table connects the major implementation milestones to the approved requirements.
-
-| Milestone | Requirement coverage |
-|---|---|
-| M0 | REQ-059, REQ-060 |
-| M1 | REQ-066, REQ-068, SAFE-001 to SAFE-012 |
-| M1.5 | REQ-073 to REQ-090, SAFE-001, SAFE-004, SAFE-006, SAFE-010, SAFE-012 |
-| M2 | REQ-001 to REQ-012 |
-| M3 | REQ-013 to REQ-021, REQ-063 to REQ-065 |
-| M4 | REQ-022 to REQ-030 |
-| M5 | REQ-031 to REQ-039 |
-| M6 | REQ-040 to REQ-047 |
-| M7 | REQ-048 to REQ-058 |
-| M8 | REQ-067 to REQ-072, REQ-017 |
-| M9 | REQ-059 to REQ-065 and MVP acceptance criteria |
-
-All applicable safety and non-functional requirements must be considered throughout implementation, not only in M1.
-
----
-
-# 15. Global Definition of Ready
-
-A task is ready for implementation when:
-
-- Its objective is clear.
-- Required dependencies are completed.
-- Its scope is defined.
-- Expected deliverables are known.
-- Acceptance criteria are testable.
-- Relevant project instructions have been inspected.
-- Required approvals are available.
-
-If any missing information could materially affect correctness or safety, implementation must pause for clarification.
-
-# 16. Global Definition of Done
-
-A task is complete when:
-
-- Its approved scope has been implemented.
-- Expected deliverables exist.
-- Acceptance criteria have been addressed.
-- Relevant validation has been executed.
-- Results have been observed and recorded.
-- Documentation has been updated where necessary.
-- No unrelated modifications have been introduced.
-- Task status reflects the actual result.
-
-A milestone is complete when all its mandatory tasks satisfy the Definition of Done and the milestone acceptance criteria.
-
-The complete MVP is done only when the developer accepts the final readiness review.
-
----
-
-# 17. Execution Rules
-
-The following rules govern implementation of this plan.
-
-1. Work on one task at a time by default.
-2. Do not start a dependent task before its dependencies are completed.
-3. Read the task and relevant project instructions before editing.
-4. Inspect Git status before potentially disruptive changes.
-5. Never overwrite existing approved documents without authorization.
-6. Do not introduce unnecessary dependencies or orchestration infrastructure.
-7. Do not add future capabilities to the MVP without approval.
-8. Run relevant validation after each task.
-9. Update task status only after validation.
-10. Report changed files and observed validation results.
-11. Stop after completing the selected task.
-12. Request approval when a change affects the approved architecture, requirements, or implementation scope.
-
----
-
-# 18. MVP Completion Criteria
-
-Dev-Team will be considered ready for MVP acceptance when:
-
-- All ten milestones (M0 through M9, including foundational M1.5) have been completed.
-- All mandatory implementation tasks have passed their acceptance criteria.
-- Foundational `project-initializer` skill and target project templates suite are operational.
-- Reusable skills work across independent Flutter projects.
-- Codex integration is verified.
-- All core workflows are operational.
-- Developer approval gates are respected.
-- Implementation and QA are independently performed.
-- Installation and usage are documented.
-- The Gotilo pilot is successful.
-- Cross-project portability is demonstrated.
-- No unresolved critical issues remain.
-
----
-
-# 19. Approval
-
-| Field | Value |
-|---|---|
-| Project | Dev-Team |
-| Requirements | Approved (v1.1) |
-| System Design | Approved (v1.1) |
-| Implementation Plan | Pending approval |
-| Plan Version | 1.1 |
-| Approved By | Pending |
-| Approval Date | Pending |
-
-**Plan status:** Draft — pending developer approval.
-
-This document becomes the implementation baseline after explicit developer approval.
-
-Any significant changes to milestone scope, architectural decisions, or safety requirements must be reviewed and approved before implementation.
+# 10. Milestone 8 — Pilot, System Validation & Refinement
+
+**Objective:** Validate Dev-Team on real-world application codebases and refine based on observed results.
+
+## Task M8-T01 — Pilot Environment Setup in Gotilo Repository
+- **Scope:** Execute `dev-team init --platform codex --mode hybrid` in the Gotilo repository, followed by `/project-initializer`.
+- **Deliverables:** Initialized Gotilo workspace with `.dev-team/` configuration and verified context.
+- **Validation:** Confirm Gotilo source code is untouched and `.dev-team/project-context.md` accurately reflects its Flutter/Supabase architecture.
+
+## Task M8-T02 — End-to-End Pilot Feature Execution
+- **Scope:** Execute the complete lifecycle (idea -> requirements -> design -> plan -> implementation -> QA) for Gotilo's Property Rating & Review feature.
+- **Deliverables:** Complete feature artifacts (`requirement.md`, `system-design.md`, `plan.md`, `qa-report.md`) and implemented feature code.
+- **Validation:** Verify all approval gates were respected and all acceptance criteria pass.
+
+## Task M8-T03 — Secondary Project Validation (Cross-Project Reuse)
+- **Scope:** Initialize a second independent repository (e.g. a Node.js or Python CLI project) using the same global Dev-Team installation.
+- **Deliverables:** Verification report demonstrating cross-project reuse without context leakage.
+- **Validation:** Verify second project consumes global skills with its own isolated `.dev-team/` context.
+
+## Task M8-T04 — Final Refinement & Documentation Polish
+- **Scope:** Review friction logs, address observed workflow gaps, refine prompts, and update all user documentation.
+- **Deliverables:** Finalized documentation, release tag v1.1.0, and updated README.
+- **Validation:** Clean pass of `dev-team doctor` and workspace validation across platforms.

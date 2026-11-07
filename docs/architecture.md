@@ -1,116 +1,161 @@
 # Dev-Team System Architecture
 
 > **Virtual AI Software Development Team**  
-> Technical architecture, architectural layers, safety boundaries, and design principles.
+> Technical architecture, 5-layer system design, hybrid distribution model, safety boundaries, and design principles (Version 1.1).
 
 ---
 
 ## 1. Architectural Overview & Philosophy
 
-Dev-Team is a specification-driven AI engineering framework designed to coordinate specialized engineering functions across independent software projects using the OpenAI Codex CLI. It enables an individual software developer to coordinate a virtual team of AI agents through structured, repeatable engineering lifecycles.
+Dev-Team is a cross-platform, reusable AI-assisted software engineering framework designed to coordinate specialized engineering functions across independent software projects. It enables an individual developer to coordinate a virtual team of AI agents through structured, repeatable engineering lifecycles.
 
-### Core Architectural Principles
+### Core Architectural Decisions (v1.1)
 
-1. **Smallest Useful Solution First:** Deliver minimal, clean, maintainable solutions; eliminate speculative abstractions and premature generalizations.
-2. **Follow Approved Architecture:** Implementation must faithfully conform to approved designs; unauthorized architectural drift or unplanned dependencies are prohibited.
-3. **Skills Over Complex Agent Orchestration:** Procedural engineering skills loaded into the primary Codex session are preferred over fragile, non-deterministic inter-agent message buses.
-4. **Explicit Approval Gates:** Consequential decisions (requirements, system architecture, data models, implementation plans, destructive commands) require explicit developer approval.
-5. **One Task at a Time:** By default, execute exactly one approved implementation task per session to guarantee human control, clear traceability, and surgical review.
-6. **Evidence Over Claims:** Tasks and verification checks are never marked complete without executing tangible commands and recording observed terminal output.
-7. **Bidirectional Traceability:** Every change must maintain strict traceability:
+1. **Hybrid Distribution:** Core procedural skills are maintained centrally and can be installed globally (`~/.dev-team/`) to be reused across any number of repositories, while each target repository maintains its own isolated project context, configuration, and optional local custom skills under `.dev-team/`.
+2. **CLI-First Lifecycle:** A dedicated, lightweight Dev-Team CLI (`dev-team`) manages installation, repository initialization, updates, and diagnostics deterministically without requiring an LLM dependency.
+3. **Platform Independence & Adapter Integration:** Core skills follow the platform-agnostic Agent Skills specification (`SKILL.md`). Platform adapters (`adapters/`) translate this canonical core into platform-specific discovery paths and instruction conventions (initial integration: OpenAI Codex CLI, with Claude Code, Cursor, Copilot, and Gemini extensible).
+4. **Smallest Useful Solution First:** Deliver minimal, maintainable solutions; eliminate speculative abstractions and unnecessary multi-agent message routing.
+5. **Deterministic CLI, Contextual AI:** The CLI handles deterministic filesystem, configuration, and linking operations; AI skills handle contextual reasoning, codebase discovery, requirements engineering, and coding.
+6. **Explicit Approval Gates:** Consequential decisions (requirements, system architecture, data models, implementation plans, destructive commands) require explicit developer approval.
+7. **One Task at a Time:** By default, execute exactly one approved implementation task per session to guarantee human control, clear traceability, and surgical review.
+8. **Evidence Over Claims:** Tasks and verification checks are never marked complete without executing tangible commands and recording observed output.
+9. **Bidirectional Traceability:** Every change maintains strict traceability:
    $$\text{Requirement} \longrightarrow \text{Architecture} \longrightarrow \text{Plan Task} \longrightarrow \text{Test} \longrightarrow \text{QA Report}$$
-8. **Separation of Concerns:** General framework logic resides within `dev-team`; application-specific rules, schemas, and instructions reside exclusively in the target project.
+10. **Preserve Clean State:** Never silently overwrite user files, uncommitted changes, or local project skill specializations.
 
 ---
 
-## 2. Layered Architecture
+## 2. Layered Architecture (Five-Layer System Design)
 
-Dev-Team is organized into eight distinct architectural layers:
+Dev-Team is organized into five decoupled architectural layers:
 
 ```mermaid
 flowchart TD
-    subgraph TargetRepo["Target Application Repository"]
-        Context["8. Project Context Layer\n(AGENTS.md, project-profile.yaml, features/)"]
+    subgraph L1["Layer 1 — Developer Interface"]
+        CLI["Dev-Team CLI (dev-team)"]
+        AI_AGENTS["AI Coding Shells (Codex CLI, Claude Code, Cursor, Copilot)"]
     end
 
-    subgraph Framework["Dev-Team System Architecture"]
-        Interface["1. Interface Layer\n(OpenAI Codex CLI)"]
-        Orchestration["2. Orchestration Layer\n(Root AGENTS.md & Approval Gates)"]
-        Config["7. Configuration Layer\n(workflow.yaml, quality-gates.yaml, defaults.yaml)"]
-        Agents["3. Agent Layer\n(agents/*.toml: Analyst, Reviewer, Architect, Planner, Developer, QA)"]
-        Skills["4. Skill Layer\n(skills/*/SKILL.md: Reusable Procedural Skills)"]
-        Workflows["5. Workflow Layer\n(workflows/*.md: End-to-End Operating Procedures)"]
-        Templates["6. Template Layer\n(templates/*.md: Standard Markdown Artifacts)"]
+    subgraph L2["Layer 2 — Platform Adapters"]
+        AD_CODEX["Codex Adapter (Reference)"]
+        AD_CLAUDE["Claude Code Adapter"]
+        AD_CURSOR["Cursor Adapter"]
+        AD_COPILOT["Copilot Adapter"]
+        AD_GEMINI["Gemini Adapter"]
     end
 
-    Interface --> Orchestration
-    Orchestration --> Config
-    Orchestration --> Agents
-    Agents --> Skills
-    Workflows --> Agents
-    Workflows --> Skills
-    Workflows --> Templates
-    Skills -.-> Context
-    Orchestration -.-> Context
+    subgraph L3["Layer 3 — Dev-Team Core"]
+        CORE_SKILLS["Agent Skills (SKILL.md)"]
+        CORE_WF["Workflows (workflows/*.md)"]
+        CORE_ROLES["Specialized Roles (agents/*.toml)"]
+        CORE_TPL["Template Suite (templates/*)"]
+        CORE_CFG["Quality Gates & Policies (config/*)"]
+    end
+
+    subgraph L4["Layer 4 — Project Context"]
+        P_DIR[".dev-team/ Directory"]
+        P_CTX["project-context.md (Canonical Store)"]
+        P_CFG["config.yaml (Declarative Settings)"]
+        P_LOCAL_SKILLS["Local Custom Skills (.dev-team/skills/)"]
+        P_DOCS["docs/project/* (Project Specifications)"]
+        P_INST["Root Instructions (AGENTS.md, rules.md, DESIGN.md)"]
+    end
+
+    subgraph L5["Layer 5 — Target Repository"]
+        REPO_SRC["Application Source Code (Flutter, Node.js, Python, Web, etc.)"]
+        REPO_TEST["Tests & Verification Suites"]
+        REPO_CI["CI/CD Workflows & Tool Configurations"]
+    end
+
+    L1 --> L2
+    L2 --> L3
+    L1 --> L3
+    L3 --> L4
+    L2 --> L4
+    L4 --> L5
 ```
 
-### 2.1 Interface Layer
-The developer interacts directly with OpenAI Codex CLI. The CLI manages tool execution (file reads, edits, shell execution, subagent delegation) and context windows.
+### 2.1 Layer 1: Developer Interface
+- **Dev-Team CLI (`dev-team`):** Deterministic tool for initialization, skill installation, updates, and diagnostics.
+- **AI Coding Agents:** The developer's direct interface for AI assistance (OpenAI Codex CLI, Claude Code, Cursor, etc.).
 
-### 2.2 Orchestration Layer
-Codex acts as the primary orchestrator. Operating under root `AGENTS.md` instructions, it interprets developer intent, selects appropriate engineering workflows, activates relevant procedural skills, and enforces mandatory approval gates before advancing phases.
+### 2.2 Layer 2: Platform Adapters (`adapters/`)
+Translates platform-independent Dev-Team capabilities into platform-specific discovery paths and conventions:
+- **OpenAI Codex:** Exposes skills to `~/.codex/skills/` or `.agents/skills/`, and integrates root instructions via `AGENTS.md`.
+- **Claude Code:** Exposes skills to `~/.claude/skills/` or `.claude/skills/`, and integrates via `CLAUDE.md`.
+- **Cursor:** Integrates via `.cursorrules` and `.cursor/skills/`.
+- **GitHub Copilot:** Integrates via `.github/copilot-instructions.md`.
+- **Gemini / Antigravity:** Integrates via `.gemini/antigravity/skills/`.
 
-### 2.3 Agent Layer (`agents/`)
-Defines six specialized engineering roles in declarative TOML specifications:
-- **Product Analyst (`product-analyst.toml`):** Requirements gathering, user journeys, edge cases, scope definition.
-- **Product Reviewer (`product-reviewer.toml`):** Independent requirements auditing, gap analysis, ambiguity detection.
-- **System Architect (`system-architect.toml`):** Technical design, component decomposition, data modeling, trade-off analysis.
-- **Technical Planner (`technical-planner.toml`):** Task slicing, dependency graphs, acceptance criteria formulation.
-- **Developer (`developer.toml`):** Controlled code implementation, test creation, deterministic validation, clean git hygiene.
-- **QA Engineer (`qa-engineer.toml`):** Independent verification, regression testing, code review, defect reporting.
+### 2.3 Layer 3: Dev-Team Core
+Reusable engineering knowledge, workflows, role definitions, and templates:
+- **Agent Skills (`skills/`):** Self-contained procedural skills following the `SKILL.md` specification.
+- **Specialized Roles (`agents/`):** TOML specifications defining roles, boundaries, and skill bindings (Product Analyst, Product Reviewer, System Architect, Technical Planner, Developer, QA Engineer).
+- **Workflows (`workflows/`):** Step-by-step standard operating procedures governing the engineering lifecycle.
+- **Templates (`templates/`):** Markdown templates for requirements, designs, plans, tasks, and QA reports.
+- **Configuration (`config/`):** Quality gates (`quality-gates.yaml`) and workflow settings (`workflow.yaml`).
 
-### 2.4 Skill Layer (`skills/`)
-Modular, on-demand procedural knowledge packaged according to Codex skill specifications (`SKILL.md` with YAML frontmatter). Skills are loaded only when an active task requires them:
-- `product-requirements`: Structured requirement elicitation and edge case analysis.
-- `requirement-validation`: Independent criteria verification and question surfacing.
-- `project-discovery`: Technology stack detection and convention inspection.
-- `system-design`: Modular technical design and data modeling.
-- `technical-planning`: Granular task decomposition and dependency mapping.
-- `flutter-development`: Idiomatic Flutter/Dart engineering and clean widget design.
-- `code-review`: Independent static code inspection and security review.
-- `feature-validation`: Verification against acceptance criteria and evidence collection.
-- `bug-fixing`: Defect reproduction, root-cause isolation, and minimal fixes.
-
-### 2.5 Workflow Layer (`workflows/`)
-Standard operating procedures coordinating agents, skills, and templates across the software lifecycle:
-`new-feature` $\rightarrow$ `validate-requirement` $\rightarrow$ `design-feature` $\rightarrow$ `create-plan` $\rightarrow$ `implement-next` $\rightarrow$ `validate-feature` $\rightarrow$ `fix-bug` $\rightarrow$ `feature-status`.
-
-### 2.6 Template Layer (`templates/`)
-Standardized markdown structures enforcing artifact consistency:
-`requirement.md`, `system-design.md`, `plan.md`, `task.md`, `qa-report.md`, `bug-report.md`.
-
-### 2.7 Configuration Layer (`config/`)
-Declarative system policies governing behavior:
-- `workflow.yaml`: Workflow registry, entry points, and default execution policies.
-- `quality-gates.yaml`: Mandatory checks for each engineering gate.
-- `defaults.yaml`: Standard paths, artifact statuses, and task lifecycle states.
-
-### 2.8 Project Context Layer (Target Repository)
-Target project architecture, existing libraries, coding conventions, test commands, and feature artifacts discovered or maintained by Dev-Team:
-- `AGENTS.md`: Target repository operating rules and project-specific instructions.
-- `rules.md`: Target repository coding standards, architectural patterns, and quality guidelines.
-- `DESIGN.md`: Target repository design system, color tokens, and typography guidelines (optional for backend/CLI projects).
-- `.dev-team/config.yaml`: Target technology stack, project type, enabled workflows, and documentation paths.
-- `.dev-team/project-context.md`: Canonical central source of truth for repository context, partitioning facts into confirmed truths (`CONFIRMED_FACTS`) versus active assumptions (`ACTIVE_ASSUMPTIONS`).
-- `.dev-team/initialization-report.md`: Audit record of detection, created files, skipped items, and open questions.
-- `.dev-team/features/<feature>/`: Feature artifacts generated throughout the lifecycle (`requirement.md`, `system-design.md`, `plan.md`, `task.md`, `qa-report.md`).
+### 2.4 Layer 4: Project Context (Target Repository)
+Target repository architecture, conventions, and context maintained under `.dev-team/`:
+- `.dev-team/project-context.md`: The central, canonical store of truth for repository context, strictly separating `CONFIRMED_FACTS` from `ACTIVE_ASSUMPTIONS`.
+- `.dev-team/config.yaml`: Declarative settings (project type, technology stack, enabled workflows, active platforms).
+- `.dev-team/skills/`: Optional project-local custom skills that specialize or extend global skills.
+- `.dev-team/features/<feature>/`: Feature lifecycle artifacts (`requirement.md`, `system-design.md`, `plan.md`, `qa-report.md`).
+- `AGENTS.md`, `rules.md`, `DESIGN.md`: Root instructions guiding AI agents operating in the repository.
 - `docs/project/`: Baseline project documentation (`overview.md`, `requirements.md`, `system-design.md`, `plan.md`, `tech-stack.md`, `architecture.md`).
+
+### 2.5 Layer 5: Target Repository
+The actual application codebase (Flutter, Node.js, Python, Java, Go, Rust, Web) and its test suites. Dev-Team operates non-invasively without imposing architectural changes on target code.
 
 ---
 
-## 3. Mandatory Safety Boundaries
+## 3. Hybrid Distribution Architecture
 
-Codex and all virtual team roles must strictly respect system safety boundaries:
+Dev-Team establishes two clear storage domains:
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        User Home (~/.dev-team/)                        │
+│  Global Shared Core:                                                   │
+│  ├── manifest.json       (Tracks installed release & file hashes)      │
+│  ├── version             (Release version, e.g. 1.1.0)                 │
+│  ├── skills/             (Canonical Agent Skills: SKILL.md)            │
+│  ├── templates/          (Project and feature templates)               │
+│  └── adapters/           (Platform adapter definitions)                │
+└────────────────────────────────────┬───────────────────────────────────┘
+                                     │
+                 Projections via CLI │ and Platform Adapters
+                                     ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                     Target Project Repository                          │
+│                                                                        │
+│  ├── .dev-team/                     <-- AUTHORITATIVE PROJECT CONTEXT  │
+│  │   ├── config.yaml                (Project-specific configuration)   │
+│  │   ├── project-context.md         (Confirmed facts & assumptions)    │
+│  │   ├── initialization-report.md   (Onboarding audit log)             │
+│  │   ├── skills/                    (Project-local custom skills)      │
+│  │   └── features/<feature>/        (Feature documentation & reports)  │
+│  │                                                                     │
+│  ├── .agents/skills/ or ~/.codex/skills/  <-- PROJECTION (NON-AUTH)    │
+│  │   └── [links/copies pointing to canonical skills]                   │
+│  │                                                                     │
+│  ├── AGENTS.md                      <-- ROOT INSTRUCTION ENTRY POINT   │
+│  ├── rules.md                       <-- LOCAL CODING STANDARDS         │
+│  └── docs/project/                  <-- BASELINE PROJECT SPECIFICATION │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Skill Resolution Priority
+When an agent or workflow activates a skill, Dev-Team resolves skills in this order:
+1. **Project-Local Custom Skills:** `<target-repo>/.dev-team/skills/<skill>/SKILL.md`
+2. **Globally Installed Core Skills:** `~/.dev-team/skills/<skill>/SKILL.md`
+3. **Platform Bundled / Discovery Skills:** Platform-native directories.
+
+---
+
+## 4. Mandatory Safety Boundaries
+
+All active agents, workflows, and CLI commands must strictly adhere to the safety boundaries (`SAFE-001` through `SAFE-012`):
 
 | Rule ID | Safety Boundary | Enforcement Mechanism |
 |---|---|---|
@@ -119,7 +164,7 @@ Codex and all virtual team roles must strictly respect system safety boundaries:
 | **SAFE-003** | Developer must approve implementation plan before task execution. | `PLAN_APPROVED` gate block. |
 | **SAFE-004** | The system must not silently alter approved requirements or expand scope. | Scope change escalation protocol. |
 | **SAFE-005** | No secrets, credentials, or API keys committed, printed, or logged. | Linter rules and automated review checks. |
-| **SAFE-006** | No destructive operations (branch deletion, hard resets) without authorization. | Command authorization gate. |
+| **SAFE-006** | No destructive operations (branch deletion, hard resets, unapproved overwrites). | Command authorization gate. |
 | **SAFE-007** | No production migrations or production deployment without explicit authorization. | Environment boundary check. |
 | **SAFE-008** | Must explain impact and risks before requesting authorization. | Risk assessment statement. |
 | **SAFE-009** | Never claim tests or builds passed without observed execution output. | Deterministic command validation. |
@@ -129,7 +174,7 @@ Codex and all virtual team roles must strictly respect system safety boundaries:
 
 ---
 
-## 4. Traceability & Artifact Lifecycle
+## 5. Traceability & Artifact Lifecycle
 
 Every feature progresses through a verifiable artifact pipeline:
 
@@ -173,19 +218,23 @@ sequenceDiagram
 
 ---
 
-## 5. Architectural Decision Records (ADRs)
+## 6. Architectural Decision Records (ADRs)
 
-Key architectural decisions established for Dev-Team:
-
-- **ADR-001: Codex CLI as Primary Host:** Build Dev-Team around OpenAI Codex CLI without custom daemon backends.
-- **ADR-002: Modular TOML for Roles:** Use TOML for declarative agent specifications separating roles, boundaries, and skills.
-- **ADR-003: Portable Skills Structure:** Standardize on `SKILL.md` files compatible with Codex skill discovery.
-- **ADR-004: Declarative Quality Gates:** Centralize verification criteria in YAML configuration (`config/quality-gates.yaml`).
-- **ADR-005: Separation of Reusable vs Application Logic:** Keep `dev-team` project-agnostic; discover target conventions dynamically.
-- **ADR-006: Single Task Execution Limit:** Limit default execution to one approved task per session to prevent drift.
-- **ADR-007: Mandatory Reproduction Before Bug Fixing:** Never modify code for a defect without deterministic reproduction or developer waiver.
-- **ADR-008: Zero-Hallucination Progress Reporting:** Calculate progress strictly from on-disk artifact statuses, never heuristic guesses.
-- **ADR-009: Shared Skills Installation:** Install reusable skills to user-level Codex discovery directory (`~/.codex/skills/`) to avoid repo bloat.
-- **ADR-010: Deterministic Workspace Validation:** Use Python scripts (`validate-workspace.py`) to deterministically verify configurations and links.
-- **ADR-015: Project Initialization & Central Context Store:** Establish foundational repository onboarding via `project-initializer`, providing idempotent classification, truth-preserving interviews, and persistent canonical context in `.dev-team/project-context.md`.
-
+| ADR ID | Title | Status | Summary |
+|---|---|---|---|
+| **ADR-001** | Codex CLI as Primary Host | Approved | Select OpenAI Codex CLI as the initial reference integration. |
+| **ADR-002** | Modular TOML for Roles | Approved | Use TOML for lightweight agent specifications in `agents/`. |
+| **ADR-003** | Agent Skills Format (`SKILL.md`) | Approved | Standardize core skills on the open `SKILL.md` specification with YAML frontmatter. |
+| **ADR-004** | Declarative Quality Gates | Approved | Centralize quality rules in `config/quality-gates.yaml`. |
+| **ADR-005** | Separation of System vs Project Logic | Approved | Keep `dev-team` project-agnostic; discover target conventions dynamically. |
+| **ADR-006** | Single Task Execution Limit | Approved | Execute one approved task per session by default to maintain human control. |
+| **ADR-007** | Mandatory Bug Reproduction | Approved | Require reproducible test case before modifying code for defects. |
+| **ADR-008** | Zero-Hallucination Progress Reporting | Approved | Derive progress strictly from on-disk artifact statuses. |
+| **ADR-009** | Central Context Store (`project-context.md`) | Approved | Maintain `.dev-team/project-context.md` as persistent repository context. |
+| **ADR-010** | Deterministic Workspace Validation | Approved | Use deterministic Python scripts for structural checks. |
+| **ADR-015** | Project Initializer Skill | Approved | Foundational AI onboarding skill for existing, empty, and partial repositories. |
+| **ADR-016** | Hybrid Distribution Model | Approved (v1.1) | Centralize global skills in `~/.dev-team/` while isolating target context in `.dev-team/`. |
+| **ADR-017** | Dedicated Dev-Team CLI | Approved (v1.1) | Provide `dev-team` CLI for installation, initialization, updates, and diagnostics. |
+| **ADR-018** | Adapter-Based Platform Integration | Approved (v1.1) | Isolate platform-specific discovery and instructions via modular adapters. |
+| **ADR-019** | Separation of CLI Bootstrap and AI Initializer | Approved (v1.1) | CLI handles filesystem setup; AI skill handles contextual analysis and document generation. |
+| **ADR-020** | Non-Destructive Update Protocol | Approved (v1.1) | Hash-tracked manifests guarantee local project modifications are never silently overwritten. |
