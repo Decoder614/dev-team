@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dev-team.org/schemas/adapter-manifest.schema.json",
+  "title": "Dev-Team Platform Adapter Manifest Schema",
+  "description": "Validates declarative AI coding platform adapter manifests at adapters/<platform>/manifest.yaml",
+  "type": "object",
+  "required": ["id", "name", "version", "capabilities", "locations"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique lowercase identifier for the platform (e.g. codex, claude-code, cursor)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name of the AI coding platform"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the adapter integration"
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Platform feature support matrix",
+      "required": [
+        "agent_skills",
+        "project_instructions",
+        "global_skills",
+        "project_skills",
+        "subagents",
+        "tool_execution"
+      ],
+      "properties": {
+        "agent_skills": { "type": "boolean" },
+        "project_instructions": { "type": "boolean" },
+        "global_skills": { "type": "boolean" },
+        "project_skills": { "type": "boolean" },
+        "subagents": { "type": "boolean" },
+        "tool_execution": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "locations": {
+      "type": "object",
+      "description": "Discovery paths and file targets for this platform",
+      "required": ["project_skills_dir", "project_instructions"],
+      "properties": {
+        "global_skills_dir": {
+          "description": "Global user-level skills directory on Windows and Unix",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "windows": { "type": ["string", "null"] },
+                "unix": { "type": ["string", "null"] }
+              },
+              "additionalProperties": false
+            },
+            { "type": ["string", "null"] }
+          ]
+        },
+        "project_skills_dir": {
+          "type": "string",
+          "description": "Relative directory in target repository where platform discovers project skills"
+        },
+        "fallback_project_skills_dir": {
+          "type": ["string", "null"],
+          "description": "Secondary or legacy project skill discovery location"
+        },
+        "project_instructions": {
+          "type": "string",
+          "description": "Filename of root instruction file (e.g. AGENTS.md, CLAUDE.md, .cursorrules)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "linking": {
+      "type": "object",
+      "description": "File linking and projection preferences",
+      "properties": {
+        "preferred_strategy": {
+          "type": "string",
+          "enum": ["symlink", "junction", "copy"],
+          "default": "symlink"
+        },
+        "windows_fallback": {
+          "type": "string",
+          "enum": ["junction", "copy"],
+          "default": "junction"
+        },
+        "safe_fallback": {
+          "type": "string",
+          "enum": ["copy"],
+          "default": "copy"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+

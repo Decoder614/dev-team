@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dev-team.org/schemas/project-config.schema.json",
+  "title": "Dev-Team Project Configuration Schema",
+  "description": "Validates target repository configuration at .dev-team/config.yaml",
+  "type": "object",
+  "required": ["version", "project"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Configuration schema version (currently 1)"
+    },
+    "project": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the target project or application"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "flutter_application",
+            "web_app",
+            "backend_service",
+            "cli_tool",
+            "monorepo",
+            "library",
+            "desktop_app",
+            "node_backend",
+            "python_service"
+          ],
+          "description": "Categorization of application stack and runtime archetype"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the application purpose"
+        }
+      },
+      "additionalProperties": false
+    },
+    "technology": {
+      "type": "object",
+      "description": "Identified or configured technology stack details",
+      "properties": {
+        "primary_language": { "type": ["string", "null"] },
+        "language": { "type": ["string", "null"] },
+        "framework": { "type": ["string", "null"] },
+        "frontend": { "type": ["string", "null"] },
+        "backend": { "type": ["string", "null"] },
+        "state_management": { "type": ["string", "null"] },
+        "navigation": { "type": ["string", "null"] },
+        "dependency_injection": { "type": ["string", "null"] },
+        "database": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "distribution": {
+      "type": "object",
+      "description": "Dev-Team skill distribution strategy in this project",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["hybrid", "copy", "symlink"],
+          "default": "hybrid",
+          "description": "Skill consumption mode"
+        }
+      },
+      "additionalProperties": false
+    },
+    "skills": {
+      "type": "object",
+      "description": "Skills configuration and enabled roster",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["global", "local", "hybrid"],
+          "default": "global"
+        },
+        "enabled": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of active skill names"
+        }
+      },
+      "additionalProperties": false
+    },
+    "platforms": {
+      "type": "object",
+      "description": "Configured AI coding assistant platform adapters",
+      "properties": {
+        "enabled": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["codex", "claude-code", "cursor", "copilot", "gemini"]
+          },
+          "description": "List of active platform adapter IDs"
+        }
+      },
+      "additionalProperties": false
+    },
+    "initialization": {
+      "type": "object",
+      "description": "Onboarding and initialization tracking metadata",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "completed"],
+          "description": "Lifecycle state of repository onboarding"
+        },
+        "initialized_at": {
+          "type": "string",
+          "description": "Timestamp when initialization completed"
+        },
+        "version": {
+          "type": "string",
+          "description": "Dev-Team version used during initialization"
+        }
+      },
+      "additionalProperties": false
+    },
+    "engineering": {
+      "type": "object",
+      "description": "Engineering practices, architecture pattern, and tooling conventions",
+      "properties": {
+        "architecture": { "type": ["string", "null"] },
+        "testing": { "type": ["string", "null"] },
+        "linter": { "type": ["string", "null"] },
+        "package_manager": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "workflows": {
+      "type": "object",
+      "description": "Workflow approval gates and policy toggles",
+      "properties": {
+        "require_requirement_approval": { "type": "boolean", "default": true },
+        "require_architecture_approval": { "type": "boolean", "default": true },
+        "require_plan_approval": { "type": "boolean", "default": true },
+        "require_qa_approval": { "type": "boolean", "default": true },
+        "auto_update_project_context": { "type": "boolean", "default": true }
+      },
+      "additionalProperties": true
+    },
+    "documentation": {
+      "type": "object",
+      "description": "Standard paths for project documentation and feature deliverables",
+      "properties": {
+        "features_directory": { "type": "string", "default": ".dev-team/features" },
+        "project_docs_directory": { "type": "string", "default": "docs/project" },
+        "context_file": { "type": "string", "default": ".dev-team/project-context.md" },
+        "initialization_report_file": { "type": "string", "default": ".dev-team/initialization-report.md" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+

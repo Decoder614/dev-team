@@ -1,5 +1,5 @@
 # Dev-Team Workflow Configuration
-# Controls workflow behaviors, approval gates, execution limits, and enabled workflows.
+# Controls workflow behaviors, approval gates, execution limits, governing roles, and enabled workflows.
 
 version: 1
 
@@ -15,44 +15,52 @@ workflows:
     enabled: true
     description: "Onboard any repository, classify project state, gather context, and establish root instructions and persistent context"
     entry_point: "workflows/initialize-project.md"
+    governing_role: "system-architect"
 
   new_feature:
     enabled: true
     description: "Convert informal product ideas into approved, validated requirements"
     entry_point: "workflows/new-feature.md"
+    governing_role: "product-analyst"
 
   requirement_validation:
     enabled: true
     description: "Independently audit requirements for clarity, completeness, and consistency"
     entry_point: "workflows/validate-requirement.md"
+    governing_role: "product-reviewer"
 
   feature_design:
     enabled: true
     description: "Design technical architecture based on project discovery and requirements"
     entry_point: "workflows/design-feature.md"
+    governing_role: "system-architect"
 
   create_plan:
     enabled: true
     description: "Decompose approved design into sequential, verifiable implementation tasks"
     entry_point: "workflows/create-plan.md"
+    governing_role: "technical-planner"
 
   implementation:
     enabled: true
     description: "Implement one approved task at a time following existing project conventions"
     entry_point: "workflows/implement-next.md"
+    governing_role: "developer"
 
   feature_validation:
     enabled: true
     description: "Independently verify implemented feature against requirements and quality standards"
     entry_point: "workflows/validate-feature.md"
+    governing_role: "qa-engineer"
 
   bug_fixing:
     enabled: true
     description: "Diagnose, reproduce, minimally fix, and verify software defects"
     entry_point: "workflows/fix-bug.md"
+    governing_role: "developer"
 
   feature_status:
     enabled: true
     description: "Report accurate feature implementation progress based on project artifacts"
     entry_point: "workflows/feature-status.md"
-
+    governing_role: "qa-engineer"

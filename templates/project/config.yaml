@@ -1,5 +1,5 @@
 # .dev-team/config.yaml — Dev-Team Target Project Configuration
-# Declares project type, detected technology stack, active workflow enforcement, and paths.
+# Declares project type, detected technology stack, distribution mode, active platform, and paths.
 
 version: 1
 
@@ -10,13 +10,39 @@ project:
   description: "[Short description of the application or service]"
 
 technology:
-  frontend: "[e.g., Flutter, React, Vue, Next.js, or null for backend]"
-  language: "[e.g., Dart, TypeScript, Python, Rust, Go, Java, Kotlin]"
+  primary_language: "[e.g., Dart, TypeScript, Python, Rust, Go, Java, Kotlin]"
+  framework: "[e.g., Flutter, React, Vue, Next.js, FastAPI, Express, Spring Boot, or null]"
   backend: "[e.g., Supabase, Firebase, FastAPI, Express, Spring Boot, or null]"
   state_management: "[e.g., BLoC, Riverpod, Redux, Zustand, or null]"
   navigation: "[e.g., GoRouter, React Router, Expo Router, or null]"
   dependency_injection: "[e.g., GetIt, Riverpod, Inversify, Spring, or null]"
   database: "[e.g., SQLite, PostgreSQL, MongoDB, Hive, or null]"
+
+distribution:
+  mode: "hybrid" # hybrid, copy, symlink
+
+skills:
+  source: "global"
+  enabled:
+    - project-initializer
+    - product-requirements
+    - requirement-validation
+    - project-discovery
+    - system-design
+    - technical-planning
+    - flutter-development
+    - code-review
+    - feature-validation
+    - bug-fixing
+
+platforms:
+  enabled:
+    - codex
+
+initialization:
+  status: "completed" # pending, in_progress, completed
+  initialized_at: "[YYYY-MM-DDTHH:MM:SSZ]"
+  version: "1.1.0"
 
 engineering:
   architecture: "[e.g., Clean Architecture, Feature-First, Layered, Hexagonal]"
@@ -36,4 +62,3 @@ documentation:
   project_docs_directory: "docs/project"
   context_file: ".dev-team/project-context.md"
   initialization_report_file: ".dev-team/initialization-report.md"
-

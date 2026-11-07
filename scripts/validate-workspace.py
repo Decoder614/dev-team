@@ -153,8 +153,11 @@ def validate_dev_team_workspace(root_path, reporter):
         print(f"Validating Dev-Team Framework Workspace at: {root_path}")
         print("------------------------------------------------------------")
 
-    # 1. Directory Structure
+    # 1. Directory Structure (Canonical v1.1 Repository Organization)
     expected_directories = [
+        "cli",
+        "adapters",
+        "schemas",
         "config",
         "agents",
         "skills",
@@ -192,6 +195,12 @@ def validate_dev_team_workspace(root_path, reporter):
     if workflow_cfg:
         if "version" in workflow_cfg and "workflows" in workflow_cfg and "defaults" in workflow_cfg:
             reporter.log_pass("Schema: workflow.yaml", "Has version, defaults, and workflows")
+            # Verify governing roles
+            for wf_name, wf_data in workflow_cfg.get("workflows", {}).items():
+                if "governing_role" in wf_data:
+                    reporter.log_pass(f"Workflow Governing Role: {wf_name} -> {wf_data['governing_role']}")
+                else:
+                    reporter.log_fail("Workflow Governing Role", f"Missing governing_role in workflow: {wf_name}", workflow_yaml_path)
         else:
             reporter.log_fail("Schema: workflow.yaml", "Missing one of required keys: version, defaults, workflows", workflow_yaml_path)
 
@@ -202,6 +211,15 @@ def validate_dev_team_workspace(root_path, reporter):
             reporter.log_pass("Schema: quality-gates.yaml", "Defines all 7 standard engineering gates")
         else:
             reporter.log_fail("Schema: quality-gates.yaml", f"Missing gate definitions: {missing_gates}", quality_gates_yaml_path)
+
+        # Verify safety boundaries (SAFE-001 to SAFE-012)
+        safety_bounds = gates_cfg.get("safety_boundaries", {})
+        expected_safes = [f"SAFE-{i:03d}" for i in range(1, 13)]
+        missing_safes = [s for s in expected_safes if s not in safety_bounds]
+        if not missing_safes:
+            reporter.log_pass("Schema: quality-gates.yaml", "Defines all 12 safety boundaries (SAFE-001 to SAFE-012)")
+        else:
+            reporter.log_fail("Safety Boundaries Missing", f"Missing safety boundaries in quality-gates.yaml: {missing_safes}", quality_gates_yaml_path)
 
     if defaults_cfg:
         if "task_statuses" in defaults_cfg and "artifact_statuses" in defaults_cfg and "paths" in defaults_cfg:
@@ -287,6 +305,7 @@ def validate_dev_team_workspace(root_path, reporter):
         "task.md",
         "qa-report.md",
         "bug-report.md",
+        "SKILL.md",
     ]
     if os.path.isdir(templates_dir):
         for tmpl in expected_templates:
@@ -365,6 +384,7 @@ def validate_dev_team_workspace(root_path, reporter):
         "installation.md",
         "workflows.md",
         "contribution-guide.md",
+        "skills-standard.md",
     ]
     for doc in expected_docs:
         doc_path = os.path.join(docs_dir, doc)
@@ -373,7 +393,32 @@ def validate_dev_team_workspace(root_path, reporter):
         else:
             reporter.log_fail("Documentation File", f"Expected documentation missing: {doc}", doc_path)
 
-    # 10. Cross-Reference Consistency
+    # 10. JSON Schemas for Declarative Contracts (Milestone 1)
+    schemas_dir = os.path.join(root_path, "schemas")
+    expected_schemas = [
+        "project-config.schema.json",
+        "adapter-manifest.schema.json",
+        "installation-manifest.schema.json",
+    ]
+    if os.path.isdir(schemas_dir):
+        for schema_file in expected_schemas:
+            schema_path = os.path.join(schemas_dir, schema_file)
+            if os.path.isfile(schema_path) and os.path.getsize(schema_path) > 50:
+                try:
+                    with open(schema_path, "r", encoding="utf-8") as f:
+                        s_data = json.load(f)
+                    if "$schema" in s_data and "properties" in s_data:
+                        reporter.log_pass(f"Schema JSON: {schema_file}", "Valid JSON Schema Draft-07 format")
+                    else:
+                        reporter.log_fail("Schema Structure", f"Schema {schema_file} missing '$schema' or 'properties'", schema_path)
+                except Exception as e:
+                    reporter.log_fail("Schema JSON Syntax", f"Error parsing schema {schema_file}: {e}", schema_path)
+            else:
+                reporter.log_fail("Schema File", f"Required schema missing or empty: {schema_file}", schema_path)
+    else:
+        reporter.log_fail("Directory Structure", "Missing schemas/ directory", schemas_dir)
+
+    # 11. Cross-Reference Consistency
     if workflow_cfg and "workflows" in workflow_cfg:
         for wf_key, wf_info in workflow_cfg["workflows"].items():
             entry_point = wf_info.get("entry_point")

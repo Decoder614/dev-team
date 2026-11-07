@@ -1,5 +1,5 @@
 # Dev-Team Default System Configuration
-# Reusable system defaults for artifact paths, statuses, discovery targets, and file naming.
+# Reusable system defaults for artifact paths, statuses, discovery targets, schemas, and file naming.
 # Project-specific configurations or instructions take precedence over these defaults.
 
 version: 1
@@ -10,6 +10,10 @@ paths:
   agents_directory: "agents"
   skills_directory: "skills"
   workflows_directory: "workflows"
+  schemas_directory: "schemas"
+  adapters_directory: "adapters"
+  cli_directory: "cli"
+  global_home_directory: ".dev-team"
 
 artifacts:
   requirement_filename: "requirement.md"
@@ -18,6 +22,10 @@ artifacts:
   task_filename: "task.md"
   qa_report_filename: "qa-report.md"
   bug_report_filename: "bug-report.md"
+  context_filename: "project-context.md"
+  config_filename: "config.yaml"
+  installation_manifest_filename: "installation-manifest.json"
+  global_manifest_filename: "manifest.json"
 
 artifact_statuses:
   initial: "DRAFT"
@@ -45,7 +53,14 @@ review_severities:
     - "MINOR"
     - "TRIVIAL"
 
+distribution_modes:
+  default: "hybrid"
+  allowed:
+    - "hybrid"
+    - "copy"
+    - "symlink"
+
 project_discovery:
   instructions_file: "AGENTS.md"
   profile_file: ".dev-team/project-profile.yaml"
-
+  config_file: ".dev-team/config.yaml"

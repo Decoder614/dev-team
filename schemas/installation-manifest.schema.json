@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dev-team.org/schemas/installation-manifest.schema.json",
+  "title": "Dev-Team Installation Manifest Schema",
+  "description": "Validates provenance tracking manifest at .dev-team/installation-manifest.json or ~/.dev-team/manifest.json",
+  "type": "object",
+  "required": [
+    "dev_team_version",
+    "installation_mode",
+    "platform",
+    "installed_at",
+    "artifacts"
+  ],
+  "properties": {
+    "dev_team_version": {
+      "type": "string",
+      "description": "Dev-Team version that created or updated the installation"
+    },
+    "installation_mode": {
+      "type": "string",
+      "enum": ["hybrid", "copy", "symlink"],
+      "description": "Installation strategy applied"
+    },
+    "platform": {
+      "type": "string",
+      "description": "Primary platform adapter configured (e.g. codex, claude-code)"
+    },
+    "installed_at": {
+      "type": "string",
+      "description": "ISO 8601 timestamp of installation or last update"
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "Registry of all files and projections managed by Dev-Team",
+      "items": {
+        "type": "object",
+        "required": ["path", "type", "managed_by_dev_team"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative or target filesystem path of the managed artifact"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "skill_projection",
+              "skill",
+              "template",
+              "adapter",
+              "configuration",
+              "documentation",
+              "script",
+              "other"
+            ],
+            "description": "Classification of the installed artifact"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": ["symlink", "junction", "copy", "managed_file"],
+            "description": "Technique used to install or project the file"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source origin path of canonical file (e.g. in ~/.dev-team/)"
+          },
+          "source_hash": {
+            "type": "string",
+            "description": "SHA-256 hash of the canonical source file for drift detection"
+          },
+          "managed_by_dev_team": {
+            "type": "boolean",
+            "description": "Whether this file is tracked and safely uninstalled/updated by Dev-Team"
+          },
+          "user_modified": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether user edits have been detected to prevent silent overwrite"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
+
