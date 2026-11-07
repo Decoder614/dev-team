@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dev-team"
+version = "1.1.0"
+description = "Dev-Team CLI — Reusable AI-Assisted Software Development Toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Dev-Team Virtual AI Software Development Team" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+]
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+dev-team = "dev_team.main:main"
+
+[tool.setuptools]
+packages = [
+    "dev_team",
+    "dev_team.commands",
+    "dev_team.core",
+    "dev_team.detection",
+    "dev_team.installation",
+    "dev_team.reporting",
+]
+
+[tool.setuptools.package-dir]
+"dev_team" = "src"
+"dev_team.commands" = "src/commands"
+"dev_team.core" = "src/core"
+"dev_team.detection" = "src/detection"
+"dev_team.installation" = "src/installation"
+"dev_team.reporting" = "src/reporting"

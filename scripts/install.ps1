@@ -107,6 +107,26 @@ if ($DiscoveredSkills.Count -eq 0) {
 Write-Host "Dev-Team Root : $DevTeamRoot"
 Write-Host "Source Skills : $SourceSkillsDir ($($DiscoveredSkills.Count) skills found)"
 
+# 1.1 Verify CLI environment and configure Windows User PATH
+$CliDir = Join-Path $DevTeamRoot "cli"
+if (Test-Path $CliDir) {
+    try {
+        $pyUserBase = python -c "import os, sys, site; print(os.path.join(site.USER_BASE, f'Python{sys.version_info.major}{sys.version_info.minor}', 'Scripts'))" 2>$null
+        if ($pyUserBase -and (Test-Path $pyUserBase)) {
+            $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+            $paths = $userPath.Split(';') | Where-Object { $_ -ne "" }
+            if ($paths -notcontains $pyUserBase) {
+                $newPath = ($paths + $pyUserBase) -join ';'
+                [Environment]::SetEnvironmentVariable('Path', $newPath, 'User')
+                $env:PATH += ";$pyUserBase"
+                Write-Host "  [PATH] Automatically added Python user Scripts directory to Windows User PATH: $pyUserBase" -ForegroundColor Green
+            }
+        }
+    } catch {
+        # Non-blocking PATH check
+    }
+}
+
 # 2. Determine Destination Skills Directory
 if ($TargetRepo) {
     if (-not (Test-Path $TargetRepo -PathType Container)) {
